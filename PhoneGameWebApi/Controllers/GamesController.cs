@@ -17,6 +17,7 @@ namespace PhoneGameWebApi.Controllers
         {
             using (var repository = new TelephoneGameRepository())
             {
+				//Testing
                 //Need a service method to get a game based on id
                 var player = GameService.FindPlayer(phoneNumber, repository);
                 if (player != null)
