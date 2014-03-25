@@ -18,7 +18,12 @@ namespace PhoneGameWebApi
         {
             AreaRegistration.RegisterAllAreas();
 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
+
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            
+            //Do not use for WebApi2
+            //WebApiConfig.Register(GlobalConfiguration.Configuration);
+            
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

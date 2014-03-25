@@ -12,7 +12,6 @@ namespace PhoneGameWebApi.Controllers
 {
     public class PlayersController : ApiController
     {
-        // GET api/<controller>
         public IEnumerable<Player> Get()
         {
             using (var repository = new TelephoneGameRepository())
@@ -21,23 +20,17 @@ namespace PhoneGameWebApi.Controllers
             }
         }
 
-        // GET api/<controller>/5
-        public object Get(string id)
+        public Player Get(string id)
         {
             using (var repository = new TelephoneGameRepository())
             {
-                var player = GameService.FindPlayer(id, repository);
+                var player = GameService.GetPlayerByID(id, repository);
                 if (player == null)
                 {
                     throw new HttpResponseException(HttpStatusCode.NotFound);
                 }
-                return new
-                {
-                    Player = player,
-                    //Games = GameService.GetGames(player, repository)
-                };
+                return player;
             }
         }
-
     }
 }

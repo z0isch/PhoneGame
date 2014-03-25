@@ -13,41 +13,21 @@ namespace PhoneGameWebApi.Controllers
 {
     public class GamesController : ApiController
     {
-        public Game AddPlayer([FromUri]string gameId, [FromUri] string phoneNumber)
+        [Route("api/players/{playerId}/games")]
+        public IEnumerable<Game> Get(string playerId)
         {
             using (var repository = new TelephoneGameRepository())
             {
-				// Testing other
-                //Need a service method to get a game based on id
-                var player = GameService.FindPlayer(phoneNumber, repository);
+                var player = GameService.GetPlayerByID(playerId, repository);
                 if (player != null)
                 {
-
+                    return GameService.GetGames(player, repository);
                 }
                 else
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-            return null;
-        }
-        public Game Start([FromUri]string phoneNumber)
-        {
-            using (var repository = new TelephoneGameRepository())
-            {
-                var player = GameService.FindPlayer(phoneNumber, repository);
-                if (player != null)
                 {
-                    var g = GameService.CreateNewGame<TwoPlayersOriginal>(player, repository);
-                    if (GameService.TransitionGameState(g, g.Edges[0], repository))
-                    {
-                        return g;
-                    }
-                    else
-                    {
-                        throw new HttpResponseException(HttpStatusCode.InternalServerError);
-                    }
-                }
-                else
                     throw new HttpResponseException(HttpStatusCode.NotFound);
+                }
+               
             }
         }
     }

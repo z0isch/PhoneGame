@@ -54,6 +54,11 @@ namespace PhoneGameService.Services
             return repository.GetPlayerByPhoneNumber(phoneNumber);
         }
 
+        public static Player GetPlayerByID(string id, TelephoneGameRepository repository)
+        {
+            return repository.GetPlayerByID(id);
+        }
+
         public static void AddPlayerToGame(Player player, Game game, TelephoneGameRepository repository)
         {
             game.AddPlayer(player, repository);
