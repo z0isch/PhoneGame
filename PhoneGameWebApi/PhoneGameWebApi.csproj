@@ -126,6 +126,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MessageHandlers\OAuthHandler.cs" />
+    <Compile Include="OAuthProviders\Facebook.cs" />
+    <Compile Include="OAuthProviders\Google.cs" />
+    <Compile Include="OAuthProviders\IOAuthProvider.cs" />
+    <Compile Include="OAuthProviders\OAuthProviderFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

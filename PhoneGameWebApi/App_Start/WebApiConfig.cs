@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Routing;
+using PhoneGameWebApi.MessageHandlers;
 
 namespace PhoneGameWebApi
 {
@@ -19,6 +20,8 @@ namespace PhoneGameWebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.MessageHandlers.Add(new OAuthHandler());
 
             /* These could be used for RPC style calls
              * 
