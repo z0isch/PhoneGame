@@ -10,5 +10,6 @@ namespace PhoneGameWebApi.OAuthProviders
     public interface IOAuthProvider
     {
         IPrincipal GetPrincipal(string token);
+        string GetToken(string code);
     }
 }

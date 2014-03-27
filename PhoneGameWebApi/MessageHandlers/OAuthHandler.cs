@@ -15,7 +15,7 @@ namespace PhoneGameWebApi.MessageHandlers
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             IPrincipal principal;
-            if(tryGetPrincipal(request, out principal))
+            if(TryGetPrincipal(request, out principal))
             {
                 Thread.CurrentPrincipal = principal;
                 if (HttpContext.Current != null)
@@ -25,10 +25,10 @@ namespace PhoneGameWebApi.MessageHandlers
             return response;
         }
 
-        private bool tryGetPrincipal(HttpRequestMessage request, out IPrincipal principal)
+        private bool TryGetPrincipal(HttpRequestMessage request, out IPrincipal principal)
         {
-            string oauthToken = getOauthToken(request);
-            string oauthProvider = getOauthProvider(request);
+            string oauthToken = GetOauthToken(request);
+            string oauthProvider = GetOauthProvider(request);
 
             if (!String.IsNullOrEmpty(oauthProvider) && !String.IsNullOrEmpty(oauthToken))
             {
@@ -42,7 +42,7 @@ namespace PhoneGameWebApi.MessageHandlers
             principal = null;
             return false;
         }
-        private string getOauthToken(HttpRequestMessage request)
+        private string GetOauthToken(HttpRequestMessage request)
         {
             string token = "";
             var tHeader = request.Headers.Where(h => h.Key == "oauth_token").FirstOrDefault().Value;
@@ -52,7 +52,7 @@ namespace PhoneGameWebApi.MessageHandlers
             }
             return token;
         }
-        private string getOauthProvider(HttpRequestMessage request)
+        private string GetOauthProvider(HttpRequestMessage request)
         {
             string provider = "";
             var pHeader = request.Headers.Where(h => h.Key == "oauth_provider").FirstOrDefault().Value;

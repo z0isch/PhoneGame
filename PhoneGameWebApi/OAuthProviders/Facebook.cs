@@ -43,6 +43,10 @@ namespace PhoneGameWebApi.OAuthProviders
             
         }
 
+        public string GetToken(string code)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
     class FacebookIdentity
