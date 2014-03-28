@@ -9,7 +9,7 @@ namespace PhoneGameWebApi.OAuthProviders
     {
         public enum OAuthProviders {Google,Facebook};
 
-        public static IOAuthProvider GetProvider(string providerName)
+        public static OAuthProvider GetProvider(string providerName)
         {
             OAuthProviders provider;
             if (Enum.TryParse<OAuthProviders>(providerName, true, out provider))

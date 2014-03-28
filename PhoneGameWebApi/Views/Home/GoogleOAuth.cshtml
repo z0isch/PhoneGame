@@ -6,13 +6,32 @@
 <p>@ViewBag.Code</p>
 <h3>Token</h3>
 <p id="token">Getting token...</p>
+<h3>Use WebApi</h3>
+<p id="webApidata">Getting WebApi data...</p>
+
 <script type="text/javascript">
     var httpRequest = new XMLHttpRequest();
+    var webApiRequest = new XMLHttpRequest();
+
+    webApiRequest.onreadystatechange = function () {
+        if (webApiRequest.readyState === 4) {
+            document.getElementById('webApidata').innerHTML = webApiRequest.responseText;
+        }
+    }
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState === 4) {
             document.getElementById('token').innerHTML = httpRequest.responseText;
+
+            var token = JSON.parse(httpRequest.responseText);
+
+            webApiRequest.open('GET', '/api/players/', true);
+            webApiRequest.setRequestHeader('oauth_token', token.EncryptedToken);
+            webApiRequest.setRequestHeader('oauth_provider', 'google');
+            webApiRequest.setRequestHeader('oauth_id', token.Id);
+            webApiRequest.send();
         }
     };
     httpRequest.open('GET', '/api/authorization/token/google/?oauthcode=@ViewBag.Code', true);
+    
     httpRequest.send();
 </script>

@@ -134,8 +134,9 @@
     <Compile Include="MessageHandlers\OAuthHandler.cs" />
     <Compile Include="OAuthProviders\Facebook.cs" />
     <Compile Include="OAuthProviders\Google.cs" />
-    <Compile Include="OAuthProviders\IOAuthProvider.cs" />
+    <Compile Include="OAuthProviders\OAuthProvider.cs" />
     <Compile Include="OAuthProviders\OAuthProviderFactory.cs" />
+    <Compile Include="OAuthTokens\OAuthToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

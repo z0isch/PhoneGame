@@ -5,22 +5,21 @@ using System.Net;
 using System.Web;
 using System.Web.Http;
 using PhoneGameWebApi.OAuthProviders;
+using PhoneGameWebApi.OAuthTokens;
 
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
     {
+        //Call this method after returning from the OAuth provider with the code in order to get the OauthToken
         [HttpGet]
         [Route("api/authorization/token/{oauthProvider}")]
-        public object Token(string oauthProvider, string oauthCode)
+        public OAuthToken Token(string oauthProvider, string oauthCode)
         {
-            IOAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
+            OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
             if (provider != null)
             {
-                return new
-                {
-                    token = provider.GetToken(oauthCode)
-                };
+                return provider.GetToken(oauthCode);
             }
             else
                 return null;

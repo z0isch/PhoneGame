@@ -6,15 +6,13 @@ using System.Net;
 using System.Security.Principal;
 using System.Web;
 using Newtonsoft.Json;
+using PhoneGameWebApi.OAuthTokens;
 
 namespace PhoneGameWebApi.OAuthProviders
 {
-    public class Facebook : IOAuthProvider
+    public class Facebook : OAuthProvider
     {
-
-        #region IOAuthProvider Members
-
-        public System.Security.Principal.IPrincipal GetPrincipal(string token)
+        protected override string GetIdFromProvider(string token)
         {
             var url = String.Format(@"https://graph.facebook.com/me?access_token={0}", token);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -38,16 +36,15 @@ namespace PhoneGameWebApi.OAuthProviders
             }
             else
             {
-                return new GenericPrincipal(new GenericIdentity(id.email), new string[] { "seeAllPlayers" }); ;
+                return id.email;
             }
             
         }
 
-        public string GetToken(string code)
+        public override OAuthToken GetToken(string code)
         {
             throw new NotImplementedException();
         }
-        #endregion
     }
     class FacebookIdentity
     {

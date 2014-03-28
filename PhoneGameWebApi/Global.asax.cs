@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -14,6 +15,8 @@ namespace PhoneGameWebApi
 
     public class WebApiApplication : System.Web.HttpApplication
     {
+        public static Dictionary<string, string> Users = new Dictionary<string, string>();
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

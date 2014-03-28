@@ -8,18 +8,18 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Text;
 using System.Configuration;
+using PhoneGameWebApi.OAuthTokens;
+using System.Security.Cryptography;
 
 namespace PhoneGameWebApi.OAuthProviders
 {
-    public class Google : IOAuthProvider
+    public class Google : OAuthProvider
     {
         private readonly string _clientID = ConfigurationManager.AppSettings["GoogleAppID"];
         private readonly string _clientSecret = ConfigurationManager.AppSettings["GoogleAppSecret"];
         private readonly string _redirectUri = ConfigurationManager.AppSettings["GoogleAppRedirect"];
 
-        #region IOAuthProvider Members
-
-        public IPrincipal GetPrincipal(string token)
+        protected override string GetIdFromProvider(string token)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/userinfo/v2/me");
             request.Method = "GET";
@@ -43,11 +43,11 @@ namespace PhoneGameWebApi.OAuthProviders
             }
             else
             {
-                return new GenericPrincipal(new GenericIdentity(id.id), new string[] { "seeAllPlayers" }); ;
+                return id.id;
             }
         }
 
-        public string GetToken(string code)
+        public override OAuthToken GetToken(string code)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://accounts.google.com/o/oauth2/token");
             request.Method = "POST";
@@ -68,6 +68,7 @@ namespace PhoneGameWebApi.OAuthProviders
                 using (StreamReader sr = new StreamReader(response.GetResponseStream()))
                 {
                     token = JsonConvert.DeserializeObject<GoogleToken>(sr.ReadToEnd());
+
                 }
             }
             catch(Exception e)
@@ -75,12 +76,16 @@ namespace PhoneGameWebApi.OAuthProviders
             
             }
             if (token == null)
-                return "";
+                return null;
             else
-                return token.access_token;
-        }
+            {
+                string id = this.GetIdFromProvider(token.access_token);
 
-        #endregion
+                this.SaveTokenInDatabase(id, token.access_token);
+
+                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
+            }
+        }
     }
     class GoogleToken
     {
@@ -102,4 +107,5 @@ namespace PhoneGameWebApi.OAuthProviders
         public string id { get; set; }
         public bool verified_email { get; set; }
     }
+    
 }

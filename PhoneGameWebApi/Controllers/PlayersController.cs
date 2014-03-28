@@ -13,7 +13,6 @@ namespace PhoneGameWebApi.Controllers
     [Authorize]
     public class PlayersController : ApiController
     {
-        [Authorize(Roles = "seeAllPlayers")]
         public IEnumerable<Player> Get()
         {
             using (var repository = new TelephoneGameRepository())
@@ -22,7 +21,6 @@ namespace PhoneGameWebApi.Controllers
             }
         }
 
-        [Authorize(Roles = "seeIndividualPlayer")]
         public Player Get(string id)
         {
             using (var repository = new TelephoneGameRepository())
