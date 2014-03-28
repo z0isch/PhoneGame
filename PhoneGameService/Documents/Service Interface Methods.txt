@@ -1,0 +1,17 @@
+Service Interface Methods
+
+This is based on our initial plan from 10/5/13.
+
+- Start a game
+- Search for a player by phone number
+- Get a list of phrases
+- Begin a turn within a game.  The service should be able to keep the state of the game and know what to do here.
+- Check state of a game.  Use this for pull notifications.
+- Get the garbled or clear audio for a given player in a game.  Maybe restrict this to only games I've played?
+- Get any player's score history for all their games.  Don't restrict this one?
+- Get the players' choices (yes/no) for a finished game.
+
+For the pusposes of removing twilio in the future, we may want the following service method:
+- Send clear audio for a game.  This would need to sanity check the state of the game.
+
+This would mean that our first build of the service would call into itself to "send" the clear audio after collecting it via twilio.  Later, if we removed twilio, we would have the client send the collected audio to the service over the network.
