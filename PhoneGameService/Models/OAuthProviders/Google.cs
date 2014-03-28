@@ -8,16 +8,15 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Text;
 using System.Configuration;
-using PhoneGameWebApi.OAuthTokens;
 using System.Security.Cryptography;
 
-namespace PhoneGameWebApi.OAuthProviders
+namespace PhoneGameService.Models.OAuthProviders
 {
     public class Google : OAuthProvider
     {
-        private readonly string _clientID = ConfigurationManager.AppSettings["GoogleAppID"];
-        private readonly string _clientSecret = ConfigurationManager.AppSettings["GoogleAppSecret"];
-        private readonly string _redirectUri = ConfigurationManager.AppSettings["GoogleAppRedirect"];
+        private readonly string _clientID = ConfigurationSettings.AppSettings["GoogleAppID"];
+        private readonly string _clientSecret = ConfigurationSettings.AppSettings["GoogleAppSecret"];
+        private readonly string _redirectUri = ConfigurationSettings.AppSettings["GoogleAppRedirect"];
 
         protected override string GetIdFromProvider(string token)
         {
@@ -81,9 +80,10 @@ namespace PhoneGameWebApi.OAuthProviders
             {
                 string id = this.GetIdFromProvider(token.access_token);
 
-                this.SaveTokenInDatabase(id, token.access_token);
+                var t = new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
+                this.SaveToken(t);
 
-                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
+                return t;
             }
         }
     }

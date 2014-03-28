@@ -6,9 +6,8 @@ using System.Net;
 using System.Security.Principal;
 using System.Web;
 using Newtonsoft.Json;
-using PhoneGameWebApi.OAuthTokens;
 
-namespace PhoneGameWebApi.OAuthProviders
+namespace PhoneGameService.Models.OAuthProviders
 {
     public class Facebook : OAuthProvider
     {

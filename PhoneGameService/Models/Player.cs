@@ -10,5 +10,6 @@ namespace PhoneGameService.Models
         public string ID { get; set; }
         public string Name { get; set; }
         public PhoneNumber TelephoneNumber { get; set; }
+        public OAuthToken Token { get; set; }
     }
 }

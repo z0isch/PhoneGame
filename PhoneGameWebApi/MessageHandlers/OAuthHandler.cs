@@ -6,8 +6,8 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using PhoneGameWebApi.OAuthProviders;
-using PhoneGameWebApi.OAuthTokens;
+using PhoneGameService.Models.OAuthProviders;
+using PhoneGameService.Models;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -37,11 +37,11 @@ namespace PhoneGameWebApi.MessageHandlers
                 OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
                 if (provider != null)
                 {
-                    string oauthToken = GetOauthToken(request, oauthId, provider);
+                    var oauthToken = GetOauthToken(request, oauthId, provider);
 
-                    if (!String.IsNullOrEmpty(oauthToken))
+                    if (oauthToken != null)
                     {
-                        principal = provider.GetPrincipalFromDatabase(oauthId,oauthToken);
+                        principal = provider.GetPrincipalFromDatabase(oauthToken);
                         return true;
                     }
                 }
@@ -54,16 +54,14 @@ namespace PhoneGameWebApi.MessageHandlers
         {
             return GetHeader(request, "oauth_id");
         }
-        private static string GetOauthToken(HttpRequestMessage request, string ouathId, OAuthProvider provider)
+        private static OAuthToken GetOauthToken(HttpRequestMessage request, string ouathId, OAuthProvider provider)
         {
-            string token = "";
-            var tHeader = request.Headers.Where(h => h.Key == "oauth_token").FirstOrDefault().Value;
-            if (tHeader != null)
+            var token = GetHeader(request, "oauth_token");
+            if (!String.IsNullOrEmpty(token))
             {
-                var t = new OAuthToken(tHeader.FirstOrDefault(), OAuthToken.TokenType.Encrypted,ouathId,provider);
-                token = t.Token;
+                return new OAuthToken(token, OAuthToken.TokenType.Encrypted, ouathId, provider);
             }
-            return token;
+            return null;
         }
         private static string GetOauthProvider(HttpRequestMessage request)
         {

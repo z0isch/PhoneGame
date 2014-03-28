@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using PhoneGameService.Models;
 using PhoneGameService.Models.GameTypes;
+using PhoneGameService.Models.OAuthProviders;
 
 namespace PhoneGameService.Repositories
 {
@@ -24,8 +26,19 @@ namespace PhoneGameService.Repositories
 
         private static GamePhrase[] _gamePhrases = { new GamePhrase() { id=1, text = "blah" }, new GamePhrase() { id=2, text = "blah2" } };
 
+        //Using concatenation for now!
+        private static Dictionary<string, Player> _oauthIdsToplayers = new Dictionary<string, Player>()
+        {
+            {"113626801228454940516|PhoneGameService.Models.OAuthProviders.Google",_players[1] }
+        };
+
         public TelephoneGameRepository()
         {
+        }
+        internal Player GetPlayerByOauthId(OAuthProvider provider, string oauthid)
+        {
+            var id = oauthid + "|" +provider.ToString();
+            return _oauthIdsToplayers.FirstOrDefault(kvp => kvp.Key == id).Value;
         }
 
         internal IList<Player> GetPlayers()

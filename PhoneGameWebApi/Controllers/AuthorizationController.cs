@@ -4,9 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
-using PhoneGameWebApi.OAuthProviders;
-using PhoneGameWebApi.OAuthTokens;
-
+using PhoneGameService.Models;
+using PhoneGameService.Models.OAuthProviders;
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController

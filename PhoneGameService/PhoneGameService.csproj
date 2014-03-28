@@ -61,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -91,6 +92,11 @@
     <Compile Include="Models\GameTypes\TestingGameType.cs" />
     <Compile Include="Models\GameTypes\GameTypeFactory.cs" />
     <Compile Include="Models\GameTypes\TwoPlayersOriginal.cs" />
+    <Compile Include="Models\OAuthProviders\Facebook.cs" />
+    <Compile Include="Models\OAuthProviders\Google.cs" />
+    <Compile Include="Models\OAuthProviders\OAuthProvider.cs" />
+    <Compile Include="Models\OAuthProviders\OAuthProviderFactory.cs" />
+    <Compile Include="Models\OAuthToken.cs" />
     <Compile Include="Repositories\TelephoneGameRepository.cs" />
     <Compile Include="Services\GameService.cs" />
     <Compile Include="Models\Game.cs" />
