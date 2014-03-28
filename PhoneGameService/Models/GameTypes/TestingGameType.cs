@@ -40,11 +40,11 @@ namespace PhoneGameService.Models
 
         internal override GameType Initialize()
         {
-            var notStarted = AddNode<NotStarted>(1);
-            var pickPlayer2 = AddNode<PickPlayer>(1);
-            var pickPhrase = AddNode<PickPhrase>(1);
-            var testNode = AddNode<TestNode>(1);
-            var endGame = AddNode<EndGame>(0);
+            var notStarted = AddNode<NotStarted>(1, "Not_Started");
+            var pickPlayer2 = AddNode<PickPlayer>(1, "Pick_Player_2");
+            var pickPhrase = AddNode<PickPhrase>(1, "Pick_Phrase");
+            var testNode = AddNode<TestNode>(1, "Test_Node");
+            var endGame = AddNode<EndGame>(0, "End_Game");
 
             AddEdge<NoCondition>(notStarted, pickPlayer2, "Pick player2");
             AddEdge<NoCondition>(notStarted, pickPhrase, "Pick phrase");

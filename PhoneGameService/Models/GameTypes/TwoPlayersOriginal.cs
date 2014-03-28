@@ -40,18 +40,18 @@ namespace PhoneGameService.Models
 
         internal override GameType Initialize()
         {
-            var notStarted = AddNode<NotStarted>(1);
-            var pickPlayer2 = AddNode<PickPlayer>(1);
-            var pickPhrase = AddNode<PickPhrase>(1);
-            var player1Ready1 = AddNode<PlayerReady>(1);
-            var player1SpeakPhrase = AddNode<PlayerSpeakPhrase>(1);
-            var notifyPlayer2 = AddNode<NotifyPlayer>(2);
-            var player2Ready = AddNode<PlayerReady>(2);
-            var listenSpeakAnswer = AddNode<PlayerListenSpeakAnswer>(2);
-            var notifyPlayer1 = AddNode<NotifyPlayer>(1);
-            var player1Ready2 = AddNode<PlayerReady>(1);
-            var listenAnswer = AddNode<PlayerListenAnswer>(1);
-            var endGame = AddNode<EndGame>(0);
+            var notStarted = AddNode<NotStarted>(1, "Not_Started");
+            var pickPlayer2 = AddNode<PickPlayer>(1, "Pick_Player_2");
+            var pickPhrase = AddNode<PickPhrase>(1, "Pick_Phrase" );
+            var player1Ready1 = AddNode<PlayerReady>(1, "Wait_For_Player_1");
+            var player1SpeakPhrase = AddNode<PlayerSpeakPhrase>(1, "Player_1_Playing");
+            var notifyPlayer2 = AddNode<NotifyPlayer>(2, "Notify_Player_2");
+            var player2Ready = AddNode<PlayerReady>(2, "Wait_For_Player_2");
+            var listenSpeakAnswer = AddNode<PlayerListenSpeakAnswer>(2, "Player_2_Playing");
+            var notifyPlayer1 = AddNode<NotifyPlayer>(1, "Notify_Player_1");
+            var player1Ready2 = AddNode<PlayerReady>(1, "Wait_For_Player_1_Again");
+            var listenAnswer = AddNode<PlayerListenAnswer>(1, "Player_1_Final_Play");
+            var endGame = AddNode<EndGame>(0, "End_Game");
 
             AddEdge<NoCondition>(notStarted, pickPlayer2, "Start");
             AddEdge<CheckNumberOfPlayers>(pickPlayer2, pickPhrase, "Player 2 chosen");

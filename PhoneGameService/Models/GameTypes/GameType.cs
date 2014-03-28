@@ -17,7 +17,7 @@ namespace PhoneGameService.Models
         public abstract int minNumberOfPlayers { get; }
         internal abstract GameType Initialize();
 
-        protected Dictionary<int, GameStateNode> nodes = new Dictionary<int, GameStateNode>();
+        internal Dictionary<int, GameStateNode> nodes = new Dictionary<int, GameStateNode>();
 
         public GameStateNode startNode { get; set; }
         public abstract GameStateNode GetNode(int id);
@@ -26,10 +26,10 @@ namespace PhoneGameService.Models
         protected int _nodeId = 1;
         protected int _edgeId = 1;
 
-        protected N AddNode<N>(int activePlayer)
+        protected N AddNode<N>(int activePlayer, string uniqueName)
             where N : GameStateNode, new()
         {
-            N newNode = new N() { id = _nodeId++, activePlayerNumber = activePlayer };
+            N newNode = new N() { id = _nodeId++, activePlayerNumber = activePlayer, uniqueName = uniqueName };
             nodes.Add(newNode.id, newNode);
             return newNode;
         }

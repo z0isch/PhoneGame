@@ -100,6 +100,7 @@
     <Compile Include="Models\PlayerCreationRequest.cs" />
     <Compile Include="Models\PlayerCreationValidation.cs" />
     <Compile Include="Models\TotalPlayerScore.cs" />
+    <Compile Include="Tests\RenderGraphTests.cs" />
     <Compile Include="Tests\PickPhraseTests.cs" />
     <Compile Include="Tests\EdgeConditionalsTests.cs" />
     <Compile Include="Tests\OriginalGameStartTests.cs" />
@@ -113,6 +114,7 @@
   <ItemGroup>
     <Content Include="Documents\gameplay.txt" />
     <Content Include="Documents\Service Interface Methods.txt" />
+    <Content Include="Documents\TwoPlayersOriginal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

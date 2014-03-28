@@ -6,6 +6,8 @@ using PhoneGameService.Models;
 using PhoneGameService.Repositories;
 using PhoneGameService.Models.GameTypes;
 using PhoneGameService.Models.EdgeConditionals;
+using PhoneGameService.Models.GameStates;
+using System.IO;
 
 namespace PhoneGameService.Services
 {
@@ -113,6 +115,40 @@ namespace PhoneGameService.Services
         public static TotalPlayerScore GetTotalPlayerScore(Player player, TelephoneGameRepository repository)
         {
             throw new NotImplementedException();
+        }
+
+        public static void RenderGameTypeDotGraph<T>(string filename) where T : GameType
+        {
+            GameType gameType = GameTypeFactory.GetGameType<T>();
+            var output = new StringBuilder();
+            output.AppendFormat("digraph {0}", gameType.GetType().Name);
+            output.AppendLine("{");
+            output.AppendLine("graph [overlap=\"false\",mode=\"hier\",splines=\"true\",root=\"INQUIRED\",levelsgap=.2]");
+            output.AppendLine("edge [fontsize=6,labelfloat=\"false\",labelangle=35,labeldistance=1.75]");
+            output.AppendLine("node [fontsize=8]");
+            foreach (GameStateNode n in gameType.nodes.Values)
+            {
+                foreach(EdgeConditional edge in n.edgeConditionals)
+                {
+                    output.AppendFormat("{0}->{1}[headlabel=\"{2}\"]\n", n.uniqueName, edge.nextNode.uniqueName, edge.text);
+                }
+            }
+
+            foreach (GameStateNode n in gameType.nodes.Values)
+            {
+                output.AppendFormat("{0};\n", n.uniqueName);
+            }
+
+            output.Append("}");
+
+            var file = new FileInfo(filename);
+            using (FileStream fs = file.OpenWrite())
+            {
+                StreamWriter sw = new StreamWriter(fs);
+                sw.Write(output.ToString());
+                sw.Close();
+            }
+
         }
     }
 }
