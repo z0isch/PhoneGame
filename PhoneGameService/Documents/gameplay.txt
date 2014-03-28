@@ -1,0 +1,50 @@
+Telephone Game
+
+This is a transcription of our plan from 10/5/13.  I added the scoring as a proposal at the bottom.
+
+- Works on a phone only
+
+Basic Gameplay
+
+Player 1
+- Start a game
+- Pick a contact to be Player 2.  The server searches and finds the user by phone number
+- Pick a phrase to speak
+- Player 1 is called by the server and prompted to speak the phrase into the phone.  Player gets only one chance to speak the phrase.
+- Player 1 is given the option to listen to the garbled audio
+- Player 1 turn end
+Player 2
+- Player 2 gets a notification that they've been sent a phrase
+- Once player 2 enters the application, they select to begin their turn
+- The server calls them on the phone and they listen to the garbled audio when they are ready
+- After listening only once, player 2 repeats back the phrase when ready
+- The user listens to the clear audio of player 1 and is prompted to say whether or not they spoke the phrase correctly
+- Player 2 turn end
+Player 1 
+- Player 1 gets a notification of player 2's response
+- Once player 1 enters the application, they select to begin their turn
+- The server calls them on the phone and they listen to the garbled audio when they are ready
+- Player 1 is prompted to say if the garbled audio is the same phrase as the original
+End of game
+- Players can listen to any of the clear or garbled audio
+- Players can see if they agreed on whether the phrase was spoken correctly by player 2
+- Players can see the game score:  
+
+Proposed scoring/points model: 
+
+Did player 2 correctly speak the phrase?
+
+               Player 2
+           Yes      No
+         +-------+-------+
+Player 1 | P1: 4 | P1: 1 |
+     Yes | P2: 4 | P2: 6 |
+         +-------+-------+ 
+         | P1: 6 | P1: 3 |
+      No | P2: 1 | P2: 3 |
+         +-------+-------+ 
+
+This scoring is based on the prisoner's delimma.  See: http://en.wikipedia.org/wiki/Prisoner's_dilemma
+My model assumes that the players are not communicating outside of the game.  There is some interesting gameplay in here.  Player 2 earns the most possible points by speaking correctly but choosing "No".  Player 1 earns the most possible points if player 2 thinks they spoke correctly, but player 1 chooses "No".  The most total points are awarded if the player both think player 2 spoke correctly.  From a selfish point of view, a player has the most potential for points if they always select "No".  But, if they both do that they will earn fewer than if they both said "Yes".
+
+If we do use this scoring, it's important to be able to see the history of choices for each player so that we can see whether or not someone is cooperative or simply playing all "No".
