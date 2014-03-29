@@ -15,17 +15,23 @@ namespace PhoneGameWebApi.Controllers
         //Call this method after returning from the OAuth provider with the code in order to get the OauthToken
         [HttpGet]
         [Route("api/authorization/token/{oauthProvider}")]
-        public OAuthToken Token(string oauthProvider, string oauthCode)
+        public object Token(string oauthProvider, string oauthCode)
         {
             OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
             if (provider != null)
             {
                 OAuthToken token = provider.GetToken(oauthCode);
+                OAuthID id = provider.GetIdFromProvider(token);
+
                 using (TelephoneGameRepository repo = new TelephoneGameRepository())
                 {
-                    OAuthService.SaveTokenFromOAuthProvider(repo, token);
+                    OAuthService.SaveTokenFromOAuthProvider(repo, token, id);
                 }
-                return token;
+                return new
+                {
+                    token = token,
+                    id = id
+                };
                 
             }
             else

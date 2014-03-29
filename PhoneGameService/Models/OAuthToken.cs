@@ -15,26 +15,31 @@ namespace PhoneGameService.Models
     {
         public enum TokenType { Encrypted, UnEncrypted, Hashed };
 
-        public string Id { get; set; }
         public OAuthProvider Provider { get; set; }
         public string Token { get; protected set; }
         public string EncryptedToken { get; protected set; }
         public string HashedToken { get; protected set; }
+        private string Salt { get; set; }
 
-        public OAuthToken(string token, TokenType type,string id, OAuthProvider provider)
+        //Need to figure out a way to manage the salt in the database
+        public OAuthToken(string token, TokenType type, OAuthProvider provider, string salt) : this(token, type, provider)
         {
-            this.Id = id;
+            this.Salt = salt;
+        }
+        public OAuthToken(string token, TokenType type, OAuthProvider provider)
+        {
+            this.Salt = "need to make this different for every person";
             this.Provider = provider;
             switch(type){
                 case TokenType.UnEncrypted:            
                     this.Token = token;
-                    this.EncryptedToken = EncryptToken(token,id,provider);
-                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(token), Encoding.UTF8.GetBytes(this.Id)));
+                    this.EncryptedToken = EncryptToken(token,this.Salt,provider);
+                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(token), Encoding.UTF8.GetBytes(this.Salt)));
                     break;
                 case TokenType.Encrypted:
                     this.EncryptedToken = token;
-                    this.Token = UnEncryptToken(token, id, provider);
-                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(this.Token), Encoding.UTF8.GetBytes(this.Id)));
+                    this.Token = UnEncryptToken(token, this.Salt, provider);
+                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(this.Token), Encoding.UTF8.GetBytes(this.Salt)));
                     break;
                 case TokenType.Hashed:
                     this.HashedToken = token;
@@ -45,19 +50,18 @@ namespace PhoneGameService.Models
 
         }
 
-        private static string _machineKeyPurpose = "User:{0};Provider:{1}";
-        private static string EncryptToken(string token, string id, OAuthProvider provider)
+        private static string EncryptToken(string token, string salt, OAuthProvider provider)
         {
-            var encrypted = MachineKey.Protect(Encoding.UTF8.GetBytes(token), String.Format(_machineKeyPurpose, id, provider.ToString()));
+            var encrypted = MachineKey.Protect(Encoding.UTF8.GetBytes(token),salt);
             return System.Convert.ToBase64String(encrypted);
         }
 
-        private static string UnEncryptToken(string encryptedtoken, string id, OAuthProvider provider)
+        private static string UnEncryptToken(string encryptedtoken, string salt, OAuthProvider provider)
         {
             byte[] t;
             try
             {
-                t = MachineKey.Unprotect(System.Convert.FromBase64String(encryptedtoken), String.Format(_machineKeyPurpose, id, provider.ToString()));
+                t = MachineKey.Unprotect(System.Convert.FromBase64String(encryptedtoken), salt);
             }
             catch
             {
@@ -84,5 +88,20 @@ namespace PhoneGameService.Models
 
             return algorithm.ComputeHash(plainTextWithSaltBytes);
         }
+
+        private static Random _random = new Random((int)DateTime.Now.Ticks);
+        private static string RandomString(int size)
+        {
+            StringBuilder builder = new StringBuilder();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * _random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+
+            return builder.ToString();
+        }
+
     }
 }

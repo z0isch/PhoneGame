@@ -11,9 +11,9 @@ namespace PhoneGameService.Models.OAuthProviders
 {
     public class Facebook : OAuthProvider
     {
-        protected override string GetIdFromProvider(string token)
+        public override OAuthID GetIdFromProvider(OAuthToken token)
         {
-            var url = String.Format(@"https://graph.facebook.com/me?access_token={0}", token);
+            var url = String.Format(@"https://graph.facebook.com/me?access_token={0}", token.Token);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             
@@ -35,7 +35,7 @@ namespace PhoneGameService.Models.OAuthProviders
             }
             else
             {
-                return id.email;
+                return new OAuthID() { ID = id.id, Provider = this };
             }
             
         }

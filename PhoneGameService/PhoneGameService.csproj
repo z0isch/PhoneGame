@@ -92,6 +92,7 @@
     <Compile Include="Models\GameTypes\TestingGameType.cs" />
     <Compile Include="Models\GameTypes\GameTypeFactory.cs" />
     <Compile Include="Models\GameTypes\TwoPlayersOriginal.cs" />
+    <Compile Include="Models\OAuthID.cs" />
     <Compile Include="Models\OAuthProviders\Facebook.cs" />
     <Compile Include="Models\OAuthProviders\Google.cs" />
     <Compile Include="Models\OAuthProviders\OAuthProvider.cs" />

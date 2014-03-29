@@ -40,12 +40,12 @@ namespace PhoneGameWebApi.MessageHandlers
                 if (provider != null)
                 {
                     var oauthToken = GetOauthToken(request, oauthId, provider);
-
+                    var id = new OAuthID() { ID = oauthId, Provider = provider };
                     if (oauthToken != null)
                     {
                         using (TelephoneGameRepository repo = new TelephoneGameRepository())
                         {
-                            Player p = OAuthService.GetPlayerByOAuthID(repo, oauthToken);
+                            Player p = OAuthService.GetPlayerByOAuthID(repo,id);
                             if (OAuthService.VerifyPlayer(repo, p, oauthToken))
                             {
                                 principal = new GenericPrincipal(new GenericIdentity(p.Name), new string[0]);
@@ -68,7 +68,7 @@ namespace PhoneGameWebApi.MessageHandlers
             var token = GetHeader(request, "oauth_token");
             if (!String.IsNullOrEmpty(token))
             {
-                return new OAuthToken(token, OAuthToken.TokenType.Encrypted, ouathId, provider);
+                return new OAuthToken(token, OAuthToken.TokenType.Encrypted, provider);
             }
             return null;
         }

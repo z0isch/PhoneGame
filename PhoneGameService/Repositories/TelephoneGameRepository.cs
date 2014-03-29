@@ -26,19 +26,22 @@ namespace PhoneGameService.Repositories
 
         private static GamePhrase[] _gamePhrases = { new GamePhrase() { id=1, text = "blah" }, new GamePhrase() { id=2, text = "blah2" } };
 
-        private static Dictionary<string, Player> _oauthToPlayers = new Dictionary<string, Player>()
+        private static Dictionary<OAuthID, Player> _oauthToPlayers = new Dictionary<OAuthID, Player>()
         {
-            {"113626801228454940516|PhoneGameService.Models.OAuthProviders.Google",_players[1] }
+            {new OAuthID(){ ID = "113626801228454940516", Provider= new Google()},_players[1] }
         };
 
         public TelephoneGameRepository()
         {
         }
 
-        internal Player GetPlayerByOAuthID(string id, OAuthProvider provider)
+        internal void AddOAuthID(Player player, OAuthID id)
         {
-            var savedId = id + "|" + provider.Name;
-            return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key == savedId).Value;
+            player.OAuthIDs.Add(id);
+        }
+        internal Player GetPlayerByOAuthID(OAuthID id)
+        {
+            return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key.Equals(id)).Value;
         }
         internal void AddOrUpdateOAuthToken(Player player, OAuthToken token)
         {
@@ -60,13 +63,8 @@ namespace PhoneGameService.Repositories
         /// <returns></returns>
         internal bool VerifyPlayer(Player player, OAuthToken token)
         {
-            OAuthToken savedToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name && t.Id == token.Id).FirstOrDefault();
-            if (savedToken == null)
-                return false;
-            else
-            {
-                return savedToken.HashedToken == token.HashedToken;
-            }
+            OAuthToken match = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name && t.HashedToken == token.HashedToken).FirstOrDefault();
+            return match != null;
         }
         internal IList<Player> GetPlayers()
         {

@@ -13,9 +13,9 @@ namespace PhoneGameService.Services
     public static class OAuthService
     {
 
-        public static Player GetPlayerByOAuthID(TelephoneGameRepository repository, OAuthToken token)
+        public static Player GetPlayerByOAuthID(TelephoneGameRepository repository, OAuthID id)
         {
-            var p = repository.GetPlayerByOAuthID(token.Id, token.Provider);
+            var p = repository.GetPlayerByOAuthID(id);
             return p;
         }
 
@@ -25,9 +25,9 @@ namespace PhoneGameService.Services
         /// <param name="repository"></param>
         /// <param name="player"></param>
         /// <param name="token"></param>
-        public static void SaveTokenFromOAuthProvider(TelephoneGameRepository repository, OAuthToken token)
+        public static void SaveTokenFromOAuthProvider(TelephoneGameRepository repository, OAuthToken token, OAuthID id)
         {
-            var player = repository.GetPlayerByOAuthID(token.Id, token.Provider);
+            var player = repository.GetPlayerByOAuthID(id);
             repository.AddOrUpdateOAuthToken(player, token);
         }
 

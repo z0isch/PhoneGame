@@ -18,11 +18,11 @@ namespace PhoneGameService.Models.OAuthProviders
         private readonly string _clientSecret = ConfigurationSettings.AppSettings["GoogleAppSecret"];
         private readonly string _redirectUri = ConfigurationSettings.AppSettings["GoogleAppRedirect"];
 
-        protected override string GetIdFromProvider(string token)
+        public override OAuthID GetIdFromProvider(OAuthToken token)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/userinfo/v2/me");
             request.Method = "GET";
-            request.Headers.Add("Authorization", "Bearer " + token);
+            request.Headers.Add("Authorization", "Bearer " + token.Token);
             
             GoogleIdentity id = null;
 
@@ -42,7 +42,7 @@ namespace PhoneGameService.Models.OAuthProviders
             }
             else
             {
-                return id.id;
+                return new OAuthID() { ID = id.id, Provider = this };
             }
         }
 
@@ -81,8 +81,7 @@ namespace PhoneGameService.Models.OAuthProviders
                 return null;
             else
             {
-                string id = this.GetIdFromProvider(token.access_token);
-                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
+                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, this);
             }
         }
     }

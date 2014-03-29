@@ -11,7 +11,7 @@ namespace PhoneGameService.Models.OAuthProviders
 {
     public abstract class OAuthProvider
     {
-        protected abstract string GetIdFromProvider(string token);
+        public abstract OAuthID GetIdFromProvider(OAuthToken token);
         public abstract OAuthToken GetToken(string code);
 
         public string Name 
