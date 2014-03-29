@@ -13,7 +13,7 @@ namespace PhoneGameService.Models
 {
     public class OAuthToken
     {
-        public enum TokenType { Encrypted, UnEncrypted };
+        public enum TokenType { Encrypted, UnEncrypted, Hashed };
 
         public string Id { get; set; }
         public OAuthProvider Provider { get; set; }
@@ -25,18 +25,24 @@ namespace PhoneGameService.Models
         {
             this.Id = id;
             this.Provider = provider;
-            if (type == TokenType.UnEncrypted)
-            {
-                this.Token = token;
-                this.EncryptedToken = EncryptToken(token,id,provider);
-                this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(token), Encoding.UTF8.GetBytes(this.Id)));
+            switch(type){
+                case TokenType.UnEncrypted:            
+                    this.Token = token;
+                    this.EncryptedToken = EncryptToken(token,id,provider);
+                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(token), Encoding.UTF8.GetBytes(this.Id)));
+                    break;
+                case TokenType.Encrypted:
+                    this.EncryptedToken = token;
+                    this.Token = UnEncryptToken(token, id, provider);
+                    this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(this.Token), Encoding.UTF8.GetBytes(this.Id)));
+                    break;
+                case TokenType.Hashed:
+                    this.HashedToken = token;
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                this.EncryptedToken = token;
-                this.Token = UnEncryptToken(token,id,provider);
-                this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(this.Token), Encoding.UTF8.GetBytes(this.Id)));
-            }
+
         }
 
         private static string _machineKeyPurpose = "User:{0};Provider:{1}";

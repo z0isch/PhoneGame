@@ -106,6 +106,7 @@
     <Compile Include="Models\PlayerCreationRequest.cs" />
     <Compile Include="Models\PlayerCreationValidation.cs" />
     <Compile Include="Models\TotalPlayerScore.cs" />
+    <Compile Include="Services\OAuthService.cs" />
     <Compile Include="Tests\RenderGraphTests.cs" />
     <Compile Include="Tests\PickPhraseTests.cs" />
     <Compile Include="Tests\EdgeConditionalsTests.cs" />

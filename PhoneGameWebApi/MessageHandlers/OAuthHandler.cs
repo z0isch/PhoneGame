@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Web;
 using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Models;
+using PhoneGameService.Repositories;
+using PhoneGameService.Services;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -41,8 +43,15 @@ namespace PhoneGameWebApi.MessageHandlers
 
                     if (oauthToken != null)
                     {
-                        principal = provider.GetPrincipalFromDatabase(oauthToken);
-                        return true;
+                        using (TelephoneGameRepository repo = new TelephoneGameRepository())
+                        {
+                            Player p = OAuthService.GetPlayerByOAuthID(repo, oauthToken);
+                            if (OAuthService.VerifyPlayer(repo, p, oauthToken))
+                            {
+                                principal = new GenericPrincipal(new GenericIdentity(p.Name), new string[0]);
+                                return true;
+                            }
+                        }
                     }
                 }
             }

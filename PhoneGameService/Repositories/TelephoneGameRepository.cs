@@ -26,8 +26,7 @@ namespace PhoneGameService.Repositories
 
         private static GamePhrase[] _gamePhrases = { new GamePhrase() { id=1, text = "blah" }, new GamePhrase() { id=2, text = "blah2" } };
 
-        //Using concatenation for now!
-        private static Dictionary<string, Player> _oauthIdsToplayers = new Dictionary<string, Player>()
+        private static Dictionary<string, Player> _oauthToPlayers = new Dictionary<string, Player>()
         {
             {"113626801228454940516|PhoneGameService.Models.OAuthProviders.Google",_players[1] }
         };
@@ -35,12 +34,40 @@ namespace PhoneGameService.Repositories
         public TelephoneGameRepository()
         {
         }
-        internal Player GetPlayerByOauthId(OAuthProvider provider, string oauthid)
-        {
-            var id = oauthid + "|" +provider.ToString();
-            return _oauthIdsToplayers.FirstOrDefault(kvp => kvp.Key == id).Value;
-        }
 
+        internal Player GetPlayerByOAuthID(string id, OAuthProvider provider)
+        {
+            var savedId = id + "|" + provider.Name;
+            return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key == savedId).Value;
+        }
+        internal void AddOrUpdateOAuthToken(Player player, OAuthToken token)
+        {
+            var exisitngToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name).FirstOrDefault();
+            if (exisitngToken == null)
+                player.OAuthTokens.Add(token);
+            else
+            {
+                player.OAuthTokens.Remove(exisitngToken);
+                player.OAuthTokens.Add(token);
+            }
+        }
+        
+        /// <summary>
+        /// Make sure that the saved hashed value of the token from the database is the same as the hashed value of the token we are given
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal bool VerifyPlayer(Player player, OAuthToken token)
+        {
+            OAuthToken savedToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name && t.Id == token.Id).FirstOrDefault();
+            if (savedToken == null)
+                return false;
+            else
+            {
+                return savedToken.HashedToken == token.HashedToken;
+            }
+        }
         internal IList<Player> GetPlayers()
         {
             return _players.ToList<Player>();

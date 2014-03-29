@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Http;
 using PhoneGameService.Models;
 using PhoneGameService.Models.OAuthProviders;
+using PhoneGameService.Repositories;
+using PhoneGameService.Services;
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
@@ -18,7 +20,13 @@ namespace PhoneGameWebApi.Controllers
             OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
             if (provider != null)
             {
-                return provider.GetToken(oauthCode);
+                OAuthToken token = provider.GetToken(oauthCode);
+                using (TelephoneGameRepository repo = new TelephoneGameRepository())
+                {
+                    OAuthService.SaveTokenFromOAuthProvider(repo, token);
+                }
+                return token;
+                
             }
             else
                 return null;

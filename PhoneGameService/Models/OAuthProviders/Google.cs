@@ -51,7 +51,10 @@ namespace PhoneGameService.Models.OAuthProviders
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://accounts.google.com/o/oauth2/token");
             request.Method = "POST";
             string postData = String.Format("client_id={0}&redirect_uri={1}&code={2}&client_secret={3}&grant_type=authorization_code",
-                this._clientID,this._redirectUri,code,this._clientSecret);
+                HttpUtility.UrlEncode(this._clientID),
+                HttpUtility.UrlEncode(this._redirectUri),
+                HttpUtility.UrlEncode(code),
+                HttpUtility.UrlEncode(this._clientSecret));
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = byteArray.Length;
@@ -79,11 +82,7 @@ namespace PhoneGameService.Models.OAuthProviders
             else
             {
                 string id = this.GetIdFromProvider(token.access_token);
-
-                var t = new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
-                this.SaveToken(t);
-
-                return t;
+                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, id, this);
             }
         }
     }
