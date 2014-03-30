@@ -13,22 +13,19 @@ namespace PhoneGameService.Models
 {
     public class OAuthToken
     {
-        public enum TokenType { Encrypted, UnEncrypted, Hashed };
-
+        public enum TokenType { Encrypted, UnEncrypted };
         public OAuthProvider Provider { get; set; }
         public string Token { get; protected set; }
         public string EncryptedToken { get; protected set; }
         public string HashedToken { get; protected set; }
-        private string Salt { get; set; }
+        public string Salt { get; set; }
 
-        //Need to figure out a way to manage the salt in the database
-        public OAuthToken(string token, TokenType type, OAuthProvider provider, string salt) : this(token, type, provider)
+        public OAuthToken(string token, TokenType type, OAuthProvider provider) : this(token,type,provider,RandomString(10))
+        {}
+
+        public OAuthToken(string token, TokenType type, OAuthProvider provider, string salt)
         {
             this.Salt = salt;
-        }
-        public OAuthToken(string token, TokenType type, OAuthProvider provider)
-        {
-            this.Salt = "need to make this different for every person";
             this.Provider = provider;
             switch(type){
                 case TokenType.UnEncrypted:            
@@ -40,9 +37,6 @@ namespace PhoneGameService.Models
                     this.EncryptedToken = token;
                     this.Token = UnEncryptToken(token, this.Salt, provider);
                     this.HashedToken = System.Convert.ToBase64String(GenerateSaltedHash(Encoding.UTF8.GetBytes(this.Token), Encoding.UTF8.GetBytes(this.Salt)));
-                    break;
-                case TokenType.Hashed:
-                    this.HashedToken = token;
                     break;
                 default:
                     break;

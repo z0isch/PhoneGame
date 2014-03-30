@@ -21,21 +21,29 @@ namespace PhoneGameWebApi.Controllers
             if (provider != null)
             {
                 OAuthToken token = provider.GetToken(oauthCode);
-                OAuthID id = provider.GetIdFromProvider(token);
+                if (token != null)
+                {
+                    OAuthID id = provider.GetIdFromProvider(token);
 
-                using (TelephoneGameRepository repo = new TelephoneGameRepository())
-                {
-                    OAuthService.SaveTokenFromOAuthProvider(repo, token, id);
+                    using (TelephoneGameRepository repo = new TelephoneGameRepository())
+                    {
+                        OAuthService.SaveTokenFromOAuthProvider(repo, token, id);
+                    }
+                    return new
+                    {
+                        token = token,
+                        id = id
+                    };
                 }
-                return new
+                else
                 {
-                    token = token,
-                    id = id
-                };
-                
+                    throw new HttpResponseException(HttpStatusCode.Forbidden);
+                }
             }
             else
-                return null;
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
         }
 
     }

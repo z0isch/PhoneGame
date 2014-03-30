@@ -61,10 +61,15 @@ namespace PhoneGameService.Repositories
         /// <param name="player"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal bool VerifyPlayer(Player player, OAuthToken token)
+        internal bool VerifyPlayer(Player player, string token, OAuthProvider provider)
         {
-            OAuthToken match = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name && t.HashedToken == token.HashedToken).FirstOrDefault();
-            return match != null;
+            OAuthToken exisitng = player.OAuthTokens.Where(t => t.Provider.Name == provider.Name).FirstOrDefault();
+            if (exisitng != null)
+            {
+                var givenToken = new OAuthToken(token, OAuthToken.TokenType.Encrypted, provider, exisitng.Salt);
+                return givenToken.HashedToken == exisitng.HashedToken;
+            }
+            return false;
         }
         internal IList<Player> GetPlayers()
         {

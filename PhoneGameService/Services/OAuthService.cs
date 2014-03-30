@@ -38,9 +38,9 @@ namespace PhoneGameService.Services
         /// <param name="player"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool VerifyPlayer(TelephoneGameRepository repository, Player player, OAuthToken token)
+        public static bool VerifyPlayer(TelephoneGameRepository repository, Player player, string token,OAuthProvider provider)
         {
-            return repository.VerifyPlayer(player, token);
+            return repository.VerifyPlayer(player, token, provider);
         }
     }
 }

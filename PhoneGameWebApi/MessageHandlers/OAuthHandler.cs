@@ -39,14 +39,14 @@ namespace PhoneGameWebApi.MessageHandlers
                 OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
                 if (provider != null)
                 {
-                    var oauthToken = GetOauthToken(request, oauthId, provider);
+                    string oauthToken = GetOauthToken(request, provider);
                     var id = new OAuthID() { ID = oauthId, Provider = provider };
                     if (oauthToken != null)
                     {
                         using (TelephoneGameRepository repo = new TelephoneGameRepository())
                         {
                             Player p = OAuthService.GetPlayerByOAuthID(repo,id);
-                            if (OAuthService.VerifyPlayer(repo, p, oauthToken))
+                            if (OAuthService.VerifyPlayer(repo, p, oauthToken, provider))
                             {
                                 principal = new GenericPrincipal(new GenericIdentity(p.Name), new string[0]);
                                 return true;
@@ -63,14 +63,9 @@ namespace PhoneGameWebApi.MessageHandlers
         {
             return GetHeader(request, "oauth_id");
         }
-        private static OAuthToken GetOauthToken(HttpRequestMessage request, string ouathId, OAuthProvider provider)
+        private static string GetOauthToken(HttpRequestMessage request, OAuthProvider provider)
         {
-            var token = GetHeader(request, "oauth_token");
-            if (!String.IsNullOrEmpty(token))
-            {
-                return new OAuthToken(token, OAuthToken.TokenType.Encrypted, provider);
-            }
-            return null;
+            return GetHeader(request, "oauth_token");
         }
         private static string GetOauthProvider(HttpRequestMessage request)
         {
