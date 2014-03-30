@@ -6,6 +6,8 @@ using System.Text;
 using PhoneGameService.Models;
 using PhoneGameService.Models.GameTypes;
 using PhoneGameService.Models.OAuthProviders;
+using PhoneGameService.Models.OAuthTokens;
+using PhoneGameService.Services;
 
 namespace PhoneGameService.Repositories
 {
@@ -43,7 +45,7 @@ namespace PhoneGameService.Repositories
         {
             return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key.Equals(id)).Value;
         }
-        internal void AddOrUpdateOAuthToken(Player player, OAuthToken token)
+        internal void AddOrUpdateOAuthToken(Player player, HashedToken token)
         {
             var exisitngToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name).FirstOrDefault();
             if (exisitngToken == null)
@@ -61,13 +63,13 @@ namespace PhoneGameService.Repositories
         /// <param name="player"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal bool VerifyPlayer(Player player, string token, OAuthProvider provider)
+        internal bool VerifyPlayer(Player player, UnEncryptedToken token)
         {
-            OAuthToken exisitng = player.OAuthTokens.Where(t => t.Provider.Name == provider.Name).FirstOrDefault();
+            HashedToken exisitng = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name).FirstOrDefault();
             if (exisitng != null)
             {
-                var givenToken = new OAuthToken(token, OAuthToken.TokenType.Encrypted, provider, exisitng.Salt);
-                return givenToken.HashedToken == exisitng.HashedToken;
+                HashedToken hashed = OAuthService.HashToken(token, exisitng.Salt);
+                return hashed.Token == exisitng.Token;
             }
             return false;
         }

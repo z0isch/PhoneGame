@@ -10,6 +10,7 @@ using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Models;
 using PhoneGameService.Repositories;
 using PhoneGameService.Services;
+using PhoneGameService.Models.OAuthTokens;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -45,8 +46,10 @@ namespace PhoneGameWebApi.MessageHandlers
                     {
                         using (TelephoneGameRepository repo = new TelephoneGameRepository())
                         {
+                            EncryptedToken encryptedToken = OAuthService.EncryptedToken(oauthToken, id);
+                            UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(encryptedToken);
                             Player p = OAuthService.GetPlayerByOAuthID(repo,id);
-                            if (OAuthService.VerifyPlayer(repo, p, oauthToken, provider))
+                            if (OAuthService.VerifyPlayer(repo,p,unencrypted))
                             {
                                 principal = new GenericPrincipal(new GenericIdentity(p.Name), new string[0]);
                                 return true;

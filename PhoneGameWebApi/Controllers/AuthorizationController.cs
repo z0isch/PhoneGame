@@ -8,6 +8,7 @@ using PhoneGameService.Models;
 using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Repositories;
 using PhoneGameService.Services;
+using PhoneGameService.Models.OAuthTokens;
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
@@ -20,20 +21,21 @@ namespace PhoneGameWebApi.Controllers
             OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
             if (provider != null)
             {
-                OAuthToken token = provider.GetToken(oauthCode);
+                UnEncryptedToken token = provider.GetToken(oauthCode);
                 if (token != null)
                 {
                     OAuthID id = provider.GetIdFromProvider(token);
-
                     using (TelephoneGameRepository repo = new TelephoneGameRepository())
                     {
-                        OAuthService.SaveTokenFromOAuthProvider(repo, token, id);
+                        var encrypted = OAuthService.EncryptToken(token, id);
+                        var hashed = OAuthService.HashTokenWithRandomSalt(token);
+                        OAuthService.SaveTokenFromOAuthProvider(repo, hashed, id);
+                        return new
+                        {
+                            token = encrypted,
+                            id = id
+                        };
                     }
-                    return new
-                    {
-                        token = token,
-                        id = id
-                    };
                 }
                 else
                 {

@@ -11,7 +11,6 @@ namespace PhoneGameService.Models
     {
         public string ID { get; set; }
         public OAuthProvider Provider { get; set; }
-        public OAuthToken Token { get; set; }
 
         public bool Equals(OAuthID other)
         {

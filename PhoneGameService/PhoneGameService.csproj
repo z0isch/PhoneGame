@@ -97,7 +97,10 @@
     <Compile Include="Models\OAuthProviders\Google.cs" />
     <Compile Include="Models\OAuthProviders\OAuthProvider.cs" />
     <Compile Include="Models\OAuthProviders\OAuthProviderFactory.cs" />
-    <Compile Include="Models\OAuthToken.cs" />
+    <Compile Include="Models\OAuthTokens\EncryptedToken.cs" />
+    <Compile Include="Models\OAuthTokens\HashedToken.cs" />
+    <Compile Include="Models\OAuthTokens\OAuthToken.cs" />
+    <Compile Include="Models\OAuthTokens\UnEncryptedToken.cs" />
     <Compile Include="Repositories\TelephoneGameRepository.cs" />
     <Compile Include="Services\GameService.cs" />
     <Compile Include="Models\Game.cs" />

@@ -25,7 +25,7 @@
             var ret = JSON.parse(httpRequest.responseText);
 
             webApiRequest.open('GET', '/api/players/', true);
-            webApiRequest.setRequestHeader('oauth_token', ret.token.EncryptedToken);
+            webApiRequest.setRequestHeader('oauth_token', ret.token.Token);
             webApiRequest.setRequestHeader('oauth_provider', 'google');
             webApiRequest.setRequestHeader('oauth_id', ret.id.ID);
             webApiRequest.send();

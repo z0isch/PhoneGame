@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Configuration;
 using System.Security.Cryptography;
+using PhoneGameService.Models.OAuthTokens;
 
 namespace PhoneGameService.Models.OAuthProviders
 {
@@ -18,7 +19,7 @@ namespace PhoneGameService.Models.OAuthProviders
         private readonly string _clientSecret = ConfigurationSettings.AppSettings["GoogleAppSecret"];
         private readonly string _redirectUri = ConfigurationSettings.AppSettings["GoogleAppRedirect"];
 
-        public override OAuthID GetIdFromProvider(OAuthToken token)
+        public override OAuthID GetIdFromProvider(UnEncryptedToken token)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/userinfo/v2/me");
             request.Method = "GET";
@@ -46,7 +47,7 @@ namespace PhoneGameService.Models.OAuthProviders
             }
         }
 
-        public override OAuthToken GetToken(string code)
+        public override UnEncryptedToken GetToken(string code)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://accounts.google.com/o/oauth2/token");
             request.Method = "POST";
@@ -81,7 +82,11 @@ namespace PhoneGameService.Models.OAuthProviders
                 return null;
             else
             {
-                return new OAuthToken(token.access_token, OAuthToken.TokenType.UnEncrypted, this);
+                return new UnEncryptedToken()
+                {
+                    Token = token.access_token,
+                    Provider = this
+                };
             }
         }
     }

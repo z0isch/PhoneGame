@@ -6,12 +6,13 @@ using System.Net;
 using System.Security.Principal;
 using System.Web;
 using Newtonsoft.Json;
+using PhoneGameService.Models.OAuthTokens;
 
 namespace PhoneGameService.Models.OAuthProviders
 {
     public class Facebook : OAuthProvider
     {
-        public override OAuthID GetIdFromProvider(OAuthToken token)
+        public override OAuthID GetIdFromProvider(UnEncryptedToken token)
         {
             var url = String.Format(@"https://graph.facebook.com/me?access_token={0}", token.Token);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -40,7 +41,7 @@ namespace PhoneGameService.Models.OAuthProviders
             
         }
 
-        public override OAuthToken GetToken(string code)
+        public override UnEncryptedToken GetToken(string code)
         {
             throw new NotImplementedException();
         }
