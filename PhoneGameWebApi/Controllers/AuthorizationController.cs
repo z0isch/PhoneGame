@@ -13,7 +13,6 @@ namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
     {
-        //Call this method after returning from the OAuth provider with the code in order to get the OauthToken
         [HttpGet]
         [Route("api/authorization/token/{oauthProvider}")]
         public object Token(string oauthProvider, string oauthCode)
@@ -29,11 +28,14 @@ namespace PhoneGameWebApi.Controllers
                     {
                         var encrypted = OAuthService.EncryptToken(token, id);
                         var hashed = OAuthService.HashTokenWithRandomSalt(token);
+                        Player p = OAuthService.GetPlayerByOAuthID(repo, id);
+
                         OAuthService.SaveTokenFromOAuthProvider(repo, hashed, id);
                         return new
                         {
-                            token = encrypted,
-                            id = id
+                            oauth_encrypted_token = encrypted.Token,
+                            oauth_provider = id.Provider.Name,
+                            phone_game_id = p.ID,
                         };
                     }
                 }
@@ -46,6 +48,14 @@ namespace PhoneGameWebApi.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("api/authorization/tryAuthentication")]
+        public string TryAuthentication()
+        {
+            return "You have been successfully authenticated, " + HttpContext.Current.User.Identity.Name;
         }
 
     }

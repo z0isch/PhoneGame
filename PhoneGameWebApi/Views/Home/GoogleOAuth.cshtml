@@ -4,9 +4,9 @@
 <h1>Google OAuth</h1>
 <h3>Code</h3>
 <p>@ViewBag.Code</p>
-<h3>Token</h3>
+<h3>Get Token</h3>
 <p id="token">Getting token...</p>
-<h3>Use WebApi</h3>
+<h3>Test Authentication</h3>
 <p id="webApidata">Getting WebApi data...</p>
 
 <script type="text/javascript">
@@ -24,10 +24,10 @@
 
             var ret = JSON.parse(httpRequest.responseText);
 
-            webApiRequest.open('GET', '/api/players/', true);
-            webApiRequest.setRequestHeader('oauth_token', ret.token.Token);
-            webApiRequest.setRequestHeader('oauth_provider', 'google');
-            webApiRequest.setRequestHeader('oauth_id', ret.id.ID);
+            webApiRequest.open('GET', '/api/authorization/tryAuthentication/', true);
+            webApiRequest.setRequestHeader('oauth_encrypted_token', ret.oauth_encrypted_token);
+            webApiRequest.setRequestHeader('oauth_provider', ret.oauth_provider);
+            webApiRequest.setRequestHeader('phone_game_id', ret.phone_game_id);
             webApiRequest.send();
         }
     };

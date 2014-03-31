@@ -17,7 +17,7 @@ namespace PhoneGameService.Models.OAuthProviders
 
         public string Name 
         {
-            get { return this.ToString(); }
+            get { return this.GetType().Name; }
         }
     }
 }

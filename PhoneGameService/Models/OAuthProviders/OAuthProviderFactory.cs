@@ -25,7 +25,6 @@ namespace PhoneGameService.Models.OAuthProviders
                 }
             }
             return null;
-
         }
     }
 }
