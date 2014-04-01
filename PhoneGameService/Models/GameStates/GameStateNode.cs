@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PhoneGameService.Models.EdgeConditionals;
+using PhoneGameService.Repositories;
 
 namespace PhoneGameService.Models.GameStates
 {
@@ -13,5 +14,9 @@ namespace PhoneGameService.Models.GameStates
         public IList<EdgeConditional> edgeConditionals = new List<EdgeConditional>();
         public int activePlayerNumber { get; set; }
         public int id { get; set; }
+
+        public virtual void Execute(Game game, TelephoneGameRepository repository)
+        {
+        }
     }
 }

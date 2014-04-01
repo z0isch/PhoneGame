@@ -31,7 +31,7 @@ namespace PhoneGameService.Models
         private int _nextPlayerNumber = 1;
         public IDictionary<int, Player> players { get { return _players; } }
 
-        public IList<EdgeConditional> Edges { get { return gameType.GetNode(currentNodeNumber).edgeConditionals; } }
+        public IList<EdgeConditional> Edges { get { return currentNode.edgeConditionals; } }
 
         public bool enoughPlayers { get { return _players.Count >= minNumberOfPlayers; } }
         public int numberOfPlayers { get { return _players.Count; } }

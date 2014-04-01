@@ -26,7 +26,9 @@ namespace PhoneGameWebApi
             
             //Do not use for WebApi2
             //WebApiConfig.Register(GlobalConfiguration.Configuration);
-            
+
+            PhoneGameService.Logging.LoggingConfiguration.Initialize(Server.MapPath("bin/Log4NetConfig.xml"));
+
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
