@@ -11,6 +11,7 @@ using PhoneGameService.Models;
 using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using PhoneGameService.Models.OAuthTokens;
+using Newtonsoft.Json;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -32,28 +33,22 @@ namespace PhoneGameWebApi.MessageHandlers
 
         private static bool TryGetPrincipal(HttpRequestMessage request, out IPrincipal principal)
         {
-            string oauthProvider = GetOauthProvider(request);
-            string oauthId = GetOauthId(request);
-
-            if (!String.IsNullOrEmpty(oauthProvider) && !String.IsNullOrEmpty(oauthId))
+            using (TelephoneGameRepository repo = new TelephoneGameRepository())
             {
-                OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
-                if (provider != null)
+                Player player = GetPlayer(request, repo);
+                OAuthProvider provider = GetOuthProvider(request);
+                if (player != null && provider != null)
                 {
-                    string oauthToken = GetOauthToken(request, provider);
-                    var id = new OAuthID() { ID = oauthId, Provider = provider };
-                    if (oauthToken != null)
+                    OAuthID id = OAuthService.GetOAuthIDByPlayer(repo, player, provider);
+                    EncryptedToken token = GetOauthToken(request, id);
+
+                    if (token != null)
                     {
-                        using (TelephoneGameRepository repo = new TelephoneGameRepository())
+                        UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(token);
+                        if (OAuthService.VerifyPlayer(repo, player, unencrypted))
                         {
-                            EncryptedToken encryptedToken = OAuthService.EncryptedToken(oauthToken, id);
-                            UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(encryptedToken);
-                            Player p = OAuthService.GetPlayerByOAuthID(repo,id);
-                            if (OAuthService.VerifyPlayer(repo,p,unencrypted))
-                            {
-                                principal = new GenericPrincipal(new GenericIdentity(p.Name), new string[0]);
-                                return true;
-                            }
+                            principal = new GenericPrincipal(new GenericIdentity(player.Name), new string[0]);
+                            return true;
                         }
                     }
                 }
@@ -62,19 +57,34 @@ namespace PhoneGameWebApi.MessageHandlers
             return false;
         }
 
-        private static string GetOauthId(HttpRequestMessage request)
+        private static Player GetPlayer(HttpRequestMessage request, TelephoneGameRepository repo)
         {
-            return GetHeader(request, "oauth_id");
+            string id = GetHeader(request, "phone_game_id");
+            if (!String.IsNullOrEmpty(id))
+            {
+                return GameService.GetPlayerByID(id, repo);
+            }
+            return null;
         }
-        private static string GetOauthToken(HttpRequestMessage request, OAuthProvider provider)
+        private static OAuthProvider GetOuthProvider(HttpRequestMessage request)
         {
-            return GetHeader(request, "oauth_token");
+            string providerName = GetHeader(request, "oauth_provider");
+            if (!String.IsNullOrEmpty(providerName))
+            {
+                return OAuthProviderFactory.GetProvider(providerName);
+            }
+            return null;
         }
-        private static string GetOauthProvider(HttpRequestMessage request)
+        private static EncryptedToken GetOauthToken(HttpRequestMessage request, OAuthID id)
         {
-            return GetHeader(request, "oauth_provider");
+            string token = GetHeader(request, "oauth_encrypted_token");
+             if (!String.IsNullOrEmpty(token))
+             {
+                 return OAuthService.GetNewEncryptedToken(token, id);
+             }
+             else
+                 return null;
         }
-
         private static string GetHeader(HttpRequestMessage request, string headerName)
         {
             string ret = "";

@@ -45,6 +45,10 @@ namespace PhoneGameService.Repositories
         {
             return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key.Equals(id)).Value;
         }
+        internal OAuthID GetOAuthIDByPlayer(Player player, OAuthProvider provider)
+        {
+            return _oauthToPlayers.FirstOrDefault(kvp => kvp.Value.ID == player.ID && kvp.Key.Provider.Name == provider.Name).Key;
+        }
         internal void AddOrUpdateOAuthToken(Player player, HashedToken token)
         {
             var exisitngToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name).FirstOrDefault();
