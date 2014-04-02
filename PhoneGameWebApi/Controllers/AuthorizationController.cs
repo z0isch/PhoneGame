@@ -10,6 +10,7 @@ using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using PhoneGameService.Models.OAuthTokens;
 using Newtonsoft.Json;
+using PhoneGameWebApi.Models;
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
@@ -56,7 +57,7 @@ namespace PhoneGameWebApi.Controllers
         [Route("api/authorization/tryAuthentication")]
         public string TryAuthentication()
         {
-            Player p = HttpContext.Current.User.Identity as Player;
+            PlayerIdentity p = HttpContext.Current.User.Identity as PlayerIdentity;
             return "You have been successfully authenticated: " + JsonConvert.SerializeObject(p);
         }
 

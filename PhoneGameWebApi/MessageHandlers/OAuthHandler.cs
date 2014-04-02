@@ -12,6 +12,7 @@ using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using PhoneGameService.Models.OAuthTokens;
 using Newtonsoft.Json;
+using PhoneGameWebApi.Models;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -47,8 +48,9 @@ namespace PhoneGameWebApi.MessageHandlers
                         UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(token);
                         if (OAuthService.VerifyPlayer(repo, player, unencrypted))
                         {
-                            player.IsAuthenticated = true;
-                            principal = new PlayerPrincipal(player);
+                            PlayerIdentity identity = new PlayerIdentity(player);
+                            identity.IsAuthenticated = true;
+                            principal = new PlayerPrincipal(identity);
                             return true;
                         }
                     }

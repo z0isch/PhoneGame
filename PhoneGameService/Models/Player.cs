@@ -7,24 +7,7 @@ using System.Security.Principal;
 
 namespace PhoneGameService.Models
 {
-    public class PlayerPrincipal : IPrincipal
-    {
-        public PlayerPrincipal(IIdentity identity)
-        {
-            Identity = identity;
-        }
-        #region IPrincipal Members
-
-        public IIdentity Identity{get;set;}
-        
-        public bool IsInRole(string role)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-    public class Player : IIdentity
+    public class Player
     {
         public string ID { get; set; }
         public string Name { get; set; }
@@ -37,13 +20,5 @@ namespace PhoneGameService.Models
             OAuthIDs = new List<OAuthID>();
             OAuthTokens = new List<HashedToken>();
         }
-
-        #region IIdentity Members
-
-        public string AuthenticationType { get { return "OAuth"; } }
-
-        public bool IsAuthenticated {get;set;}
-
-        #endregion
     }
 }
