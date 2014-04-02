@@ -12,6 +12,7 @@ using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using PhoneGameService.Models.OAuthTokens;
 using Newtonsoft.Json;
+using PhoneGameWebApi.Models;
 
 namespace PhoneGameWebApi.MessageHandlers
 {
@@ -20,7 +21,7 @@ namespace PhoneGameWebApi.MessageHandlers
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            IPrincipal principal;
+            PlayerPrincipal principal;
             if(TryGetPrincipal(request, out principal))
             {
                 Thread.CurrentPrincipal = principal;
@@ -31,7 +32,7 @@ namespace PhoneGameWebApi.MessageHandlers
             return response;
         }
 
-        private static bool TryGetPrincipal(HttpRequestMessage request, out IPrincipal principal)
+        private static bool TryGetPrincipal(HttpRequestMessage request, out PlayerPrincipal principal)
         {
             using (TelephoneGameRepository repo = new TelephoneGameRepository())
             {
@@ -47,7 +48,9 @@ namespace PhoneGameWebApi.MessageHandlers
                         UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(token);
                         if (OAuthService.VerifyPlayer(repo, player, unencrypted))
                         {
-                            principal = new GenericPrincipal(new GenericIdentity(player.Name), new string[0]);
+                            PlayerIdentity identity = new PlayerIdentity(player);
+                            identity.IsAuthenticated = true;
+                            principal = new PlayerPrincipal(identity);
                             return true;
                         }
                     }

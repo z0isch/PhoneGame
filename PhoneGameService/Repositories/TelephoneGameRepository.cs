@@ -20,7 +20,11 @@ namespace PhoneGameService.Repositories
         #endregion
 
         private static Player[] _players = { new Player { ID="70C5AB60-F65C-4319-85B4-2DF3398E24DC", Name="Vern Fridell", TelephoneNumber= new PhoneNumber() { ID=1, Number="15022967010"} },
-                                             new Player { ID="34C94F02-7F26-4C5B-8C5D-3C64DEB979A3", Name="AJ Ruf", TelephoneNumber= new PhoneNumber() { ID=2, Number="15022967466"} }, 
+                                             new Player { ID="34C94F02-7F26-4C5B-8C5D-3C64DEB979A3",
+                                                 Name="AJ Ruf",
+                                                 TelephoneNumber= new PhoneNumber() { ID=2, Number="15022967466"},
+                                                 OAuthIDs = new List<OAuthID>() {new OAuthID(){ ID = "113626801228454940516", Provider= new Google()}}
+                                             },
                                              new Player { ID="67516D71-8B31-4B1F-8DC2-6A0E60E92605", Name="Ellie Fridell", TelephoneNumber= new PhoneNumber() { ID=3, Number="15027625695"} }, 
                                            };
         private static GameType[] _gameTypes = { };

@@ -136,6 +136,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="MessageHandlers\OAuthHandler.cs" />
+    <Compile Include="Models\PlayerIdentity.cs" />
+    <Compile Include="Models\PlayerPrincipal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +159,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
-    <Folder Include="Models\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
