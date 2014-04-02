@@ -56,6 +56,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -119,6 +122,7 @@
     <Compile Include="Models\PlayerCreationValidation.cs" />
     <Compile Include="Models\TotalPlayerScore.cs" />
     <Compile Include="Services\OAuthService.cs" />
+    <Compile Include="Tests\OAuthServiceTests.cs" />
     <Compile Include="Tests\RenderGraphTests.cs" />
     <Compile Include="Tests\PickPhraseTests.cs" />
     <Compile Include="Tests\EdgeConditionalsTests.cs" />
