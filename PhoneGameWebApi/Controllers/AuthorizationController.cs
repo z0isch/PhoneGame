@@ -9,6 +9,7 @@ using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using PhoneGameService.Models.OAuthTokens;
+using Newtonsoft.Json;
 namespace PhoneGameWebApi.Controllers
 {
     public class AuthorizationController : ApiController
@@ -49,13 +50,14 @@ namespace PhoneGameWebApi.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
         }
-
-        [HttpGet]
+        
         [Authorize]
+        [HttpGet]
         [Route("api/authorization/tryAuthentication")]
         public string TryAuthentication()
         {
-            return "You have been successfully authenticated, " + HttpContext.Current.User.Identity.Name;
+            Player p = HttpContext.Current.User.Identity as Player;
+            return "You have been successfully authenticated: " + JsonConvert.SerializeObject(p);
         }
 
     }

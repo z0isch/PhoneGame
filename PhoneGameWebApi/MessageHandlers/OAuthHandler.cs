@@ -20,7 +20,7 @@ namespace PhoneGameWebApi.MessageHandlers
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            IPrincipal principal;
+            PlayerPrincipal principal;
             if(TryGetPrincipal(request, out principal))
             {
                 Thread.CurrentPrincipal = principal;
@@ -31,7 +31,7 @@ namespace PhoneGameWebApi.MessageHandlers
             return response;
         }
 
-        private static bool TryGetPrincipal(HttpRequestMessage request, out IPrincipal principal)
+        private static bool TryGetPrincipal(HttpRequestMessage request, out PlayerPrincipal principal)
         {
             using (TelephoneGameRepository repo = new TelephoneGameRepository())
             {
@@ -47,7 +47,8 @@ namespace PhoneGameWebApi.MessageHandlers
                         UnEncryptedToken unencrypted = OAuthService.UnEncryptToken(token);
                         if (OAuthService.VerifyPlayer(repo, player, unencrypted))
                         {
-                            principal = new GenericPrincipal(new GenericIdentity(player.Name), new string[0]);
+                            player.IsAuthenticated = true;
+                            principal = new PlayerPrincipal(player);
                             return true;
                         }
                     }
