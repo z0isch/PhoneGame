@@ -1,50 +1,60 @@
 ﻿@{
     ViewBag.Title = "Google OAuth";
 }
-@if(null == ViewBag.Code){
-<button id="google_sign_in">
-  Sign in with Google
-</button>
- <script type="text/javascript">
-    document.getElementById("google_sign_in").addEventListener('click', function () {
-    authWindow = window.location.href = "@Html.Raw(ViewBag.GoogleUrl)";
-   });
-   
-</script>
-}
-else{
+<div id="authButtons">
+  <button id="google_sign_in">
+    Sign in with Google
+  </button>
+  <p>
+    <label>Paste your code here: </label><input id="code" />
+    <button id="codeButton">Authenticate</button>
+  </p>
+</div>
+<div id="codeDiv">
   <h1>Google OAuth</h1>
   <h3>Code</h3>
-  <p>@ViewBag.Code</p>
+  <p id="codeP"></p>
   <h3>Get Token</h3>
   <p id="token">Getting token...</p>
   <h3>Test Authentication</h3>
   <p id="webApidata">Getting WebApi data...</p>
-
+</div>
   <script type="text/javascript">
-      var httpRequest = new XMLHttpRequest();
-      var webApiRequest = new XMLHttpRequest();
+    var httpRequest = new XMLHttpRequest();
+    var webApiRequest = new XMLHttpRequest();
 
-      webApiRequest.onreadystatechange = function () {
-          if (webApiRequest.readyState === 4) {
-              document.getElementById('webApidata').innerHTML = webApiRequest.responseText;
-          }
-      }
-      httpRequest.onreadystatechange = function () {
-          if (httpRequest.readyState === 4) {
-              document.getElementById('token').innerHTML = httpRequest.responseText;
+    document.getElementById("codeDiv").style.display = 'none';
 
-              var ret = JSON.parse(httpRequest.responseText);
-
-              webApiRequest.open('GET', '/api/authorization/tryAuthentication/', true);
-              webApiRequest.setRequestHeader('oauth_encrypted_token', ret.oauth_encrypted_token);
-              webApiRequest.setRequestHeader('oauth_provider', ret.oauth_provider);
-              webApiRequest.setRequestHeader('phone_game_id', ret.phone_game_id);
-              webApiRequest.send();
-          }
-      };
-      httpRequest.open('GET', '/api/authorization/token/google/?oauthcode=@ViewBag.Code', true);
-    
+    document.getElementById("google_sign_in").addEventListener('click', function () {
+      var authWindow = window.open("@Html.Raw(ViewBag.GoogleUrl)");
+    });
+    document.getElementById("codeButton").addEventListener('click', function () {
+      document.getElementById('codeP').innerText = document.getElementById('code').value;
+      document.getElementById("codeDiv").style.display = 'block';
+      document.getElementById("authButtons").style.display = 'none';
+      httpRequest.open('GET', '@Url.Content("~/api/authorization/token/google/")'+'?oauthcode='+document.getElementById('code').value, true);
       httpRequest.send();
+    });
+
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState === 4) {
+            document.getElementById('token').innerHTML = httpRequest.responseText;
+
+            var ret = JSON.parse(httpRequest.responseText);
+
+            webApiRequest.open('GET', '@Url.Content("~/api/authorization/tryAuthentication/")', true);
+            webApiRequest.setRequestHeader('oauth_encrypted_token', ret.oauth_encrypted_token);
+            webApiRequest.setRequestHeader('oauth_provider', ret.oauth_provider);
+            webApiRequest.setRequestHeader('phone_game_id', ret.phone_game_id);
+            webApiRequest.send();
+        }
+    };
+
+    webApiRequest.onreadystatechange = function () {
+      if (webApiRequest.readyState === 4) {
+        document.getElementById('webApidata').innerHTML = webApiRequest.responseText;
+      }
+    }
+    
+     
   </script>
-}

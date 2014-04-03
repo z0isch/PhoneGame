@@ -23,7 +23,7 @@ namespace PhoneGameWebApi.Controllers
 
         public ActionResult GoogleOAuth(string code)
         {
-            ViewBag.GoogleUrl = OAuthService.GetOAuthUrl(new Google());
+            ViewBag.GoogleUrl =new Google().GetOAuthUrl();
             ViewBag.Code = code;    
             return View();
         }

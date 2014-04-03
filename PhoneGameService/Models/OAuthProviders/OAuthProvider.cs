@@ -14,6 +14,7 @@ namespace PhoneGameService.Models.OAuthProviders
     {
         public abstract OAuthID GetIdFromProvider(UnEncryptedToken token);
         public abstract UnEncryptedToken GetToken(string code);
+        public abstract string GetOAuthUrl();
 
         public string Name 
         {

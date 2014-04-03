@@ -18,7 +18,13 @@ namespace PhoneGameService.Models.OAuthProviders
         private readonly string _clientID = ConfigurationSettings.AppSettings["GoogleAppID"];
         private readonly string _clientSecret = ConfigurationSettings.AppSettings["GoogleAppSecret"];
         private readonly string _redirectUri = ConfigurationSettings.AppSettings["GoogleAppRedirect"];
-
+        public override string GetOAuthUrl()
+        {
+            string url = String.Format("https://accounts.google.com/o/oauth2/auth?redirect_uri={0}&response_type=code&client_id={1}&scope=profile",
+                 HttpUtility.UrlEncode(_redirectUri),
+                 HttpUtility.UrlEncode(_clientID));
+            return url;
+        }
         public override OAuthID GetIdFromProvider(UnEncryptedToken token)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/userinfo/v2/me");
@@ -52,10 +58,10 @@ namespace PhoneGameService.Models.OAuthProviders
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://accounts.google.com/o/oauth2/token");
             request.Method = "POST";
             string postData = String.Format("client_id={0}&redirect_uri={1}&code={2}&client_secret={3}&grant_type=authorization_code",
-                HttpUtility.UrlEncode(this._clientID),
-                HttpUtility.UrlEncode(this._redirectUri),
+                HttpUtility.UrlEncode(_clientID),
+                HttpUtility.UrlEncode(_redirectUri),
                 HttpUtility.UrlEncode(code),
-                HttpUtility.UrlEncode(this._clientSecret));
+                HttpUtility.UrlEncode(_clientSecret));
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = byteArray.Length;

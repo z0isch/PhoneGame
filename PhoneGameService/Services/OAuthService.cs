@@ -16,16 +16,6 @@ namespace PhoneGameService.Services
 {
     public static class OAuthService
     {
-        public static string GetOAuthUrl(OAuthProvider provider)
-        {
-            if(provider.GetType() == typeof(Google)){
-                string url=String.Format("https://accounts.google.com/o/oauth2/auth?redirect_uri={0}&response_type=code&client_id={1}&scope=profile",
-                 HttpUtility.UrlEncode("http://localhost:55961/home/GoogleOAuth"),
-                 HttpUtility.UrlEncode("553327898639-2ngq3i7eve550c7et33b2789i9fseh67.apps.googleusercontent.com"));
-                return url;
-            }
-            return "";
-        }
         public static OAuthID GetOAuthIDByPlayer(TelephoneGameRepository repository, Player player, OAuthProvider provider)
         {
             var p = repository.GetOAuthIDByPlayer(player, provider);
