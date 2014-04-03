@@ -1,55 +1,75 @@
-// Ionic Starter App
+(function () {
+  angular.module('app', ['ionic', 'oauth','game'])
+    .config(function ($stateProvider, $urlRouterProvider) {
+      $stateProvider
+      .state('login', {
+        url: '/login',
+        templateUrl: 'login.html',
+        controller: 'LoginCtrl'
+      })
+      .state('main', {
+        url: '/',
+        templateUrl: 'main.html',
+        controller: 'MainCtrl'
+      });
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-angular.module('PhoneGame', ['ionic'])
-.controller('LoginCtrl', function ($scope, $ionicPlatform, $http) {
-  $scope.loggedIn = false;
-  $scope.status='<h3>You are not logged in!</h3><p>Please use an OAuth provider below:</p>';
-  $ionicPlatform.ready(function () {
-    if (window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-    $scope.googleLogin = function () {
-        var authWindow = window.open("https://accounts.google.com/o/oauth2/auth?redirect_uri=http://localhost&response_type=code&client_id=553327898639-hasp38g0chplhbvq0hb5nt652pkbsgqd.apps.googleusercontent.com&scope=profile",
-           "_blank", 'location=no,toolbar=no');
-      authWindow.addEventListener('loadstart', function (e) {
-        var url = e.url;
-        var code = /\?code=(.+)$/.exec(url);
-        var error = /\?error=(.+)$/.exec(url);
+      $urlRouterProvider.otherwise("/");
 
-        if (code || error) {
-          authWindow.close();
-          $scope.status = '<h3>You have gotten a code from Google!</h3>';
-          $scope.code = code[1];
-          $scope.loggedIn = true;
+    })
+    .controller('LoginCtrl', ['$scope', '$ionicPlatform', '$http', 'authentication', '$state', '$ionicLoading',
+      function ($scope, $ionicPlatform, $http, authentication, $state, $ionicLoading) {
+        $ionicPlatform.ready(function () {
+          $scope.googleLogin = function () {
+            var promise = authentication.openOAuthWindow("google");
+            var loadingScreen = $ionicLoading.show({
+              content: 'Logging in...',
+            });
+            promise.then(function (credentials) {
+              authentication.saveCredentials(credentials);
+              $state.go('main');
+              loadingScreen.hide();
+            }, function (error) {
+              alert(error);
+              loadingScreen.hide();
+            }, function (notification) {});
+          }
+        });
+      }
+    ])
+    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authentication', 'playersService', '$ionicLoading',
+      function ($scope, $ionicPlatform, $http, $state, authentication, playersService,$ionicLoading) {
+        $scope.loggedIn = false;
+
+        $scope.goToLogin = function () {
+          $state.go('login');
+        }
+        $scope.logOut = function () {
+          authentication.logUserOut();
+          $scope.loggedIn = false;
           $scope.$apply();
-          $http({ method: 'GET', url: 'http://54.200.69.198/phonegameservice/api/authorization/token/google/?oauthcode=' + $scope.code })
-          .success(function (data, status, headers, config) {
-            $scope.token = JSON.stringify(data);
-            $scope.$apply();
-            $http({
-              method: 'GET', url: 'http://54.200.69.198/phonegameservice/api/authorization/tryAuthentication/', headers: {
-                'oauth_encrypted_token': data.oauth_encrypted_token,
-                'oauth_provider': data.oauth_provider,
-                'phone_game_id': data.phone_game_id
-              }
-            })
-            .success(function (data, status, headers, config) {
-              $scope.identity = data;
-              $scope.$apply();
-            })
-            .error(function (data, status, headers, config) {
-              alert("Error: " + status);
-            })
-          })
-          .error(function (data, status, headers, config) {
-            alert("Error: " + status);
-           });
         }
 
-      });
-    }
-  });
-});
+        $ionicPlatform.ready(function () {
+          if (authentication.isLoggedIn()) {
+            var credentials = authentication.getCredentials();
+            $scope.loggedIn = true;
+            $scope.$apply();
+
+            var loadingScreen = $ionicLoading.show({
+              content: 'Getting account info...',
+            });
+
+            var promise = playersService.getPlayer(credentials, credentials.phone_game_id);
+            promise.then(function (player) {
+              $scope.name = player.Name;
+              loadingScreen.hide();
+            }, function (error) {
+              alert(error);
+              loadingScreen.hide();
+            },
+            function (notifications) { });
+          }
+        });
+      }
+    ]);
+})();

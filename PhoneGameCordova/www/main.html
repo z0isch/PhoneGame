@@ -1,0 +1,9 @@
+﻿<div ng-if="!loggedIn">
+  <h3>Welcome to PhoneGame!</h3>
+  <p>Please login to continue</p>
+  <button class="button" ng-click="goToLogin()">Login</button>
+</div>
+<div ng-if="loggedIn">
+  <h3>Hey <span ng-bind="name"></span>!</h3>
+  <button class="button" ng-click="logOut()">Log Out</button>
+</div>
