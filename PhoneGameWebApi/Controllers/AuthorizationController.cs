@@ -61,5 +61,20 @@ namespace PhoneGameWebApi.Controllers
             return "You have been successfully authenticated: " + JsonConvert.SerializeObject(p);
         }
 
+        [HttpGet]
+        [Route("api/authorization/GetOAuthUrl/{oauthProvider}")]
+        public string GetOAuthUrl(string oauthProvider)
+        {
+            OAuthProvider provider = OAuthProviderFactory.GetProvider(oauthProvider);
+            if (provider != null)
+            {
+                return provider.GetOAuthUrl();
+            }
+            else
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+        }
+
     }
 }

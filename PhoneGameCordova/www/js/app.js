@@ -1,5 +1,5 @@
 (function () {
-  angular.module('app', ['ionic', 'oauth','game'])
+  angular.module('app', ['ionic', 'oauth','phoneGame'])
     .config(function ($stateProvider, $urlRouterProvider) {
       $stateProvider
       .state('login', {
@@ -59,7 +59,7 @@
               content: 'Getting account info...',
             });
 
-            var promise = playersService.getPlayer(credentials, credentials.phone_game_id);
+            var promise = playersService.getPlayer(credentials.phone_game_id);
             promise.then(function (player) {
               $scope.name = player.Name;
               loadingScreen.hide();

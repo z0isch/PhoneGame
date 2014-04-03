@@ -1,14 +1,12 @@
 ﻿(function () {
-  angular.module('game', [])
-  .service('playersService', ['$http', '$q', function ($http, $q) {
-    this.getPlayer = function (credentials, id) {
+  angular.module('phoneGame', ['oauth'])
+  .service('playersService', ['$http', '$q', 'authentication', function ($http, $q, authentication) {
+    this.getPlayer = function (id) {
       var deferred = $q.defer();
       $http({
-        method: 'GET', url: 'http://54.200.69.198/phonegameservice/api/Players/' + id, headers: {
-          'oauth_encrypted_token': credentials.oauth_encrypted_token,
-          'oauth_provider': credentials.oauth_provider,
-          'phone_game_id': credentials.phone_game_id
-        }
+        method: 'GET',
+        url: 'http://54.200.69.198/phonegameservice/api/Players/' + id,
+        headers: authentication.getOAuthHeaders()
       })
        .success(function (data, status, headers, config) {
          deferred.resolve(data);
