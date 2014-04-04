@@ -37,7 +37,7 @@
       }
     ])
     .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authentication', 'playersService', '$ionicLoading',
-      function ($scope, $ionicPlatform, $http, $state, authentication, playersService,$ionicLoading) {
+      function ($scope, $ionicPlatform, $http, $state, authentication, playersService, $ionicLoading) {
         $scope.loggedIn = false;
 
         $scope.goToLogin = function () {
