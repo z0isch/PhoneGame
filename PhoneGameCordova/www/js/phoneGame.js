@@ -1,25 +1,26 @@
 ﻿(function () {
   angular.module('phoneGame', ['oauth'])
   .constant('phoneGameBaseUrl', 'http://54.200.69.198/phonegameservice')
-  .service('playersService', ['$http', '$q', 'authentication', 'phoneGameBaseUrl',
-    function ($http, $q, authentication, phoneGameBaseUrl) {
+  .service('playersService', ['$http', '$q', 'authenticationService', 'phoneGameBaseUrl',
+    function ($http, $q, authenticationService, phoneGameBaseUrl) {
+
       this.getPlayer = function (id) {
         var deferred = $q.defer();
-        alert(JSON.stringify(authentication.getOAuthHeaders()));
-        $http({
-          method: 'GET',
-          url: phoneGameBaseUrl+'api/Players/' + id,
-          headers: authentication.getOAuthHeaders()
-        })
+        
+        var h = authenticationService.getOAuthHeaders();
+        $http.get(phoneGameBaseUrl + '/api/players/' + id, { headers: h, responseType:'json' })
          .success(function (data, status, headers, config) {
            deferred.resolve(data);
          })
         .error(function (data, status, headers, config) {
-          if(status == "404")
+          if (status == "401")
             deferred.reject("User not logged in");
-          else if(status == "400")
+          else if (status == "404")
             deferred.reject("User not found");
-        })
+          else
+            deferred.reject("Server error with: "+status);
+        });
+
         return deferred.promise;
       }
     }
@@ -30,7 +31,7 @@
       this.getToken = function (provider, code) {
         var deferred = $q.defer();
         
-        $http({ method: 'GET', url: phoneGameBaseUrl + '/api/authorization/token/' + provider + '/?oauthcode=' + code })
+        $http.get(phoneGameBaseUrl + '/api/authorization/token/' + provider + '/?oauthcode=' + code)
         .success(function (data, status, headers, config) {
           deferred.resolve(data);
         })
@@ -43,7 +44,7 @@
 
       this.getOAuthUrl = function(provider) {
         var deferred = $q.defer();
-        $http({ method: 'GET', url: phoneGameBaseUrl + '/api/authorization/GetOAuthUrl/' + provider })
+        $http.get(phoneGameBaseUrl + '/api/authorization/GetOAuthUrl/' + provider)
         .success(function (data, status, headers, config) {
           //Trim the quotes around the url
           if (data.substr(0, 1) === '"') data = data.substring(1);

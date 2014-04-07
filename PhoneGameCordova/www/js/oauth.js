@@ -1,13 +1,11 @@
 ﻿(function () {
   angular.module('oauth', ['phoneGame'])
-  .service('authentication', ['$http', '$q','authorizationService',
+  .service('authenticationService', ['$http', '$q','authorizationService',
     function ($http, $q, authorizationService) {
       this.openOAuthWindow = function (provider) {
-
         var deferred = $q.defer();
 
         authorizationService.getOAuthUrl(provider).then(function (data) {
-
           var authWindow = window.open(data, "_blank", 'location=no,toolbar=no');
           var returnedFromProvider = false;
 

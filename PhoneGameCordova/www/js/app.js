@@ -16,42 +16,45 @@
       $urlRouterProvider.otherwise("/");
 
     })
-    .controller('LoginCtrl', ['$scope', '$ionicPlatform', '$http', 'authentication', '$state', '$ionicLoading',
-      function ($scope, $ionicPlatform, $http, authentication, $state, $ionicLoading) {
+    .controller('LoginCtrl', ['$scope', '$ionicPlatform', '$http', 'authenticationService', '$state', '$ionicLoading',
+      function ($scope, $ionicPlatform, $http, authenticationService, $state, $ionicLoading) {
         $ionicPlatform.ready(function () {
           $scope.googleLogin = function () {
-            var promise = authentication.openOAuthWindow("google");
+            var promise = authenticationService.openOAuthWindow("google");
             var loadingScreen = $ionicLoading.show({
               content: 'Logging in...',
             });
             promise.then(function (credentials) {
-              authentication.saveCredentials(credentials);
+              authenticationService.saveCredentials(credentials);
               $state.go('main');
-              loadingScreen.hide();
             }, function (error) {
               alert(error);
+            });
+
+            promise['finally'](function () {
               loadingScreen.hide();
-            }, function (notification) {});
+            });
+            
           }
         });
       }
     ])
-    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authentication', 'playersService', '$ionicLoading',
-      function ($scope, $ionicPlatform, $http, $state, authentication, playersService, $ionicLoading) {
+    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService', 'playersService', '$ionicLoading',
+      function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService, $ionicLoading) {
         $scope.loggedIn = false;
 
         $scope.goToLogin = function () {
           $state.go('login');
         }
         $scope.logOut = function () {
-          authentication.logUserOut();
+          authenticationService.logUserOut();
           $scope.loggedIn = false;
           $scope.$apply();
         }
 
         $ionicPlatform.ready(function () {
-          if (authentication.isLoggedIn()) {
-            var credentials = authentication.getCredentials();
+          if (authenticationService.isLoggedIn()) {
+            var credentials = authenticationService.getCredentials();
             $scope.loggedIn = true;
             $scope.$apply();
 
@@ -62,12 +65,13 @@
             var promise = playersService.getPlayer(credentials.phone_game_id);
             promise.then(function (player) {
               $scope.name = player.Name;
-              loadingScreen.hide();
             }, function (error) {
               alert(error);
+            });
+
+            promise['finally'](function () {
               loadingScreen.hide();
-            },
-            function (notifications) { });
+            });
           }
         });
       }
