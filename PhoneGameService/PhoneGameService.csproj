@@ -65,6 +65,12 @@
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Plivo">
+      <HintPath>..\packages\Plivo.1.3.4\lib\net40\Plivo.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\Plivo.1.3.4\lib\net40\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -112,6 +118,7 @@
     <Compile Include="Models\OAuthTokens\HashedToken.cs" />
     <Compile Include="Models\OAuthTokens\OAuthToken.cs" />
     <Compile Include="Models\OAuthTokens\UnEncryptedToken.cs" />
+    <Compile Include="Models\Server.cs" />
     <Compile Include="Repositories\TelephoneGameRepository.cs" />
     <Compile Include="Services\GameService.cs" />
     <Compile Include="Models\Game.cs" />
@@ -122,6 +129,7 @@
     <Compile Include="Models\PlayerCreationValidation.cs" />
     <Compile Include="Models\TotalPlayerScore.cs" />
     <Compile Include="Services\OAuthService.cs" />
+    <Compile Include="Services\PhoneService.cs" />
     <Compile Include="Tests\OAuthServiceTests.cs" />
     <Compile Include="Tests\RenderGraphTests.cs" />
     <Compile Include="Tests\PickPhraseTests.cs" />

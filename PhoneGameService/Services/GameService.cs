@@ -18,6 +18,11 @@ namespace PhoneGameService.Services
             return repository.GetPlayers();
         }
 
+        public static Game GetGame(int gameId, TelephoneGameRepository repository)
+        {
+            throw new NotImplementedException();
+        }
+
         public static IList<Game> GetGames(Player player, TelephoneGameRepository repository)
         {
             throw new NotImplementedException();

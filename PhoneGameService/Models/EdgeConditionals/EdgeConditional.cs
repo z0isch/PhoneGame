@@ -25,6 +25,7 @@ namespace PhoneGameService.Models.EdgeConditionals
             }
 
             game._currentNodeNumber = nextNode.id;
+            game.currentNode.Execute(game, repository);
         }
     }
 }
