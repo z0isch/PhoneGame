@@ -108,6 +108,7 @@
     <Compile Include="Models\OAuthProviders\Google.cs" />
     <Compile Include="Models\OAuthProviders\OAuthProvider.cs" />
     <Compile Include="Models\OAuthProviders\OAuthProviderFactory.cs" />
+    <Compile Include="Models\OAuthProviders\TestProvider.cs" />
     <Compile Include="Models\OAuthTokens\EncryptedToken.cs" />
     <Compile Include="Models\OAuthTokens\HashedToken.cs" />
     <Compile Include="Models\OAuthTokens\OAuthToken.cs" />

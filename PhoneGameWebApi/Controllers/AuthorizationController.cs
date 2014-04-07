@@ -75,6 +75,5 @@ namespace PhoneGameWebApi.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
         }
-
     }
 }

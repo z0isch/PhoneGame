@@ -48,6 +48,8 @@
     <Content Include="www\img\ionic.png" />
     <Content Include="www\index.html" />
     <Content Include="www\js\app.js" />
+    <Content Include="www\js\desktopMocks\oauth.js" />
+    <Content Include="www\js\desktopMocks\phoneGame.js" />
     <Content Include="www\js\oauth.js" />
     <Content Include="www\js\phoneGame.js" />
     <Content Include="www\lib\ionic\css\ionic.css" />
@@ -69,6 +71,7 @@
     <Content Include="www\lib\ionic\js\ionic.bundle.min.js" />
     <Content Include="www\lib\ionic\js\ionic.js" />
     <Content Include="www\lib\ionic\js\ionic.min.js" />
+    <Content Include="www\lib\q.js" />
     <Content Include="www\login.html" />
     <Content Include="www\main.html" />
   </ItemGroup>
