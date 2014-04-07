@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <ExcludeFoldersFromDeployment>Cordova</ExcludeFoldersFromDeployment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -148,6 +149,41 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Cordova\www\.gitignore" />
+    <Content Include="Cordova\www\config.xml" />
+    <Content Include="Cordova\www\css\ionic.app.css" />
+    <Content Include="Cordova\www\css\ionic.app.min.css" />
+    <Content Include="Cordova\www\css\style.css" />
+    <Content Include="Cordova\www\img\ionic.png" />
+    <Content Include="Cordova\www\index.html" />
+    <Content Include="Cordova\www\js\app.js" />
+    <Content Include="Cordova\www\js\desktopMocks\oauth.js" />
+    <Content Include="Cordova\www\js\desktopMocks\phoneGameUrl.js" />
+    <Content Include="Cordova\www\js\oauth.js" />
+    <Content Include="Cordova\www\js\phoneGame.js" />
+    <Content Include="Cordova\www\js\phoneGameUrl.js" />
+    <Content Include="Cordova\www\lib\ionic\css\ionic.css" />
+    <Content Include="Cordova\www\lib\ionic\css\ionic.min.css" />
+    <Content Include="Cordova\www\lib\ionic\fonts\ionicons.svg" />
+    <Content Include="Cordova\www\lib\ionic\js\angular-ui\angular-ui-router.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular-ui\angular-ui-router.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-animate.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-animate.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-resource.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-resource.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-sanitize.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular-sanitize.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular.js" />
+    <Content Include="Cordova\www\lib\ionic\js\angular\angular.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic-angular.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic-angular.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic.bundle.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic.bundle.min.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic.js" />
+    <Content Include="Cordova\www\lib\ionic\js\ionic.min.js" />
+    <Content Include="Cordova\www\lib\q.js" />
+    <Content Include="Cordova\www\login.html" />
+    <Content Include="Cordova\www\main.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -165,7 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +221,43 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Cordova\www\lib\ionic\fonts\ionicons.eot" />
+    <Content Include="Cordova\www\lib\ionic\fonts\ionicons.ttf" />
+    <Content Include="Cordova\www\lib\ionic\fonts\ionicons.woff" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionic.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionicons\ionicons.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionicons\_ionicons-animation.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionicons\_ionicons-font.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionicons\_ionicons-icons.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\ionicons\_ionicons-variables.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_action-sheet.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_animations.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_badge.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_bar.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_button-bar.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_button.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_checkbox.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_form.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_grid.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_items.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_list.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_menu.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_mixins.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_modal.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_platform.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_popup.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_progress.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_radio.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_range.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_reset.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_scaffolding.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_slide-box.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_split-pane.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_tabs.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_toggle.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_type.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_util.scss" />
+    <Content Include="Cordova\www\lib\ionic\scss\_variables.scss" />
     <None Include="Properties\PublishProfiles\AWS Server.pubxml" />
   </ItemGroup>
   <PropertyGroup>

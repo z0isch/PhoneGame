@@ -1,6 +1,5 @@
 ﻿(function () {
-  angular.module('phoneGame', ['oauth'])
-  .constant('phoneGameBaseUrl', 'http://54.200.69.198/phonegameservice')
+  angular.module('phoneGame', ['oauth','phoneGameUrl'])
   .service('playersService', ['$http', '$q', 'authenticationService', 'phoneGameBaseUrl',
     function ($http, $q, authenticationService, phoneGameBaseUrl) {
 

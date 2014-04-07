@@ -7,7 +7,7 @@ namespace PhoneGameService.Models.OAuthProviders
 {
     public class OAuthProviderFactory
     {
-        public enum OAuthProviders {Google,Facebook};
+        public enum OAuthProviders {Google,Facebook,TestProvider};
 
         public static OAuthProvider GetProvider(string providerName)
         {
@@ -20,6 +20,8 @@ namespace PhoneGameService.Models.OAuthProviders
                         return new Google();
                     case OAuthProviders.Facebook:
                         return new Facebook(); 
+                    case OAuthProviders.TestProvider:
+                        return new TestProvider();
                     default:
                         return null;
                 }

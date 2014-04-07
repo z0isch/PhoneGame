@@ -1,5 +1,5 @@
 (function () {
-  angular.module('app', ['ionic', 'oauth','phoneGame'])
+  angular.module('app', ['ionic', 'oauth', 'phoneGame'])
     .config(function ($stateProvider, $urlRouterProvider) {
       $stateProvider
       .state('login', {
@@ -49,14 +49,12 @@
         $scope.logOut = function () {
           authenticationService.logUserOut();
           $scope.loggedIn = false;
-          $scope.$apply();
         }
 
         $ionicPlatform.ready(function () {
           if (authenticationService.isLoggedIn()) {
             var credentials = authenticationService.getCredentials();
             $scope.loggedIn = true;
-            $scope.$apply();
 
             var loadingScreen = $ionicLoading.show({
               content: 'Getting account info...',
