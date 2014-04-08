@@ -7,7 +7,7 @@ using System.Security.Principal;
 
 namespace PhoneGameService.Models
 {
-    public class Player
+    public class Player : IEquatable<Player>, IComparable<Player>
     {
         public string ID { get; set; }
         public string Name { get; set; }
@@ -19,6 +19,19 @@ namespace PhoneGameService.Models
         {
             OAuthIDs = new List<OAuthID>();
             OAuthTokens = new List<HashedToken>();
+        }
+
+        public int CompareTo(Player other)
+        {
+            if (Equals(other))
+                return 0;
+
+            return ID.CompareTo(other.ID);
+        }
+
+        public bool Equals(Player other)
+        {
+            return ID == other.ID;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace PhoneGameWebApi
                 defaults: new { id = RouteParameter.Optional }
             );
 
+
             config.MessageHandlers.Add(new OAuthHandler());
 
             /* These could be used for RPC style calls

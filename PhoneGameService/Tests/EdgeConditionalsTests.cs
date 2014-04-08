@@ -61,7 +61,7 @@ namespace PhoneGameService.Tests
                 Game game = _game1;
 
                 Assert.That(game.Edges[0].GetType() == typeof(NoCondition), "This edge is not a NoConditional");
-                bool success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                bool success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(success, "Couldn't transition along NoConditional edge");
             }
         }
@@ -79,13 +79,13 @@ namespace PhoneGameService.Tests
             {
                 Game game = _game2;
 
-                bool success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                bool success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(success, "Couldn't transition");
 
                 Assert.That(game.Edges[0].GetType() == typeof(CheckNumberOfPlayers), "This edge is not a CheckNumberOfPlayers");
 
                 GameService.AddPlayerToGame(_player2, game, repository);
-                success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(success, "Couldn't transition along CheckNumberOfPlayers edge");
             }
         }
@@ -97,12 +97,12 @@ namespace PhoneGameService.Tests
             {
                 Game game = _game3;
 
-                bool success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                bool success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(success, "Couldn't transition");
 
                 Assert.That(game.Edges[0].GetType() == typeof(CheckNumberOfPlayers), "This edge is not a CheckNumberOfPlayers");
 
-                success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(!success, "Should not have transitioned along CheckNumberOfPlayers edge");
             }
         }
@@ -114,14 +114,14 @@ namespace PhoneGameService.Tests
             {
                 Game game = _game4;
 
-                bool success = GameService.TransitionGameState(game, game.Edges[1], repository);
+                bool success = GameService.TransitionGameState(game, game.Edges[1], repository).Success;
                 Assert.That(success, "Couldn't transition");
 
                 Assert.That(game.Edges[0].GetType() == typeof(CheckPhraseChosen), "This edge is not a CheckPhraseChosen");
 
                 var phrase = new GamePhrase();
                 GameService.PickPhraseForGame(phrase, game, repository);
-                success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(success, "Couldn't transition along CheckPhraseChosen edge");
             }
         }
@@ -133,12 +133,12 @@ namespace PhoneGameService.Tests
             {
                 Game game = _game5;
 
-                bool success = GameService.TransitionGameState(game, game.Edges[1], repository);
+                bool success = GameService.TransitionGameState(game, game.Edges[1], repository).Success;
                 Assert.That(success, "Couldn't transition");
 
                 Assert.That(game.Edges[0].GetType() == typeof(CheckPhraseChosen), "This edge is not a CheckPhraseChosen");
 
-                success = GameService.TransitionGameState(game, game.Edges[0], repository);
+                success = GameService.TransitionGameState(game, game.Edges[0], repository).Success;
                 Assert.That(!success, "Should not have transitioned along CheckPhraseChosen edge");
             }
         }

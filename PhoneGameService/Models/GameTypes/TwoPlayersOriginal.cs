@@ -5,6 +5,7 @@ using System.Text;
 using PhoneGameService.Repositories;
 using PhoneGameService.Models.GameStates;
 using PhoneGameService.Models.EdgeConditionals;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Models
 {
@@ -59,15 +60,15 @@ namespace PhoneGameService.Models
             AddEdge<NoCondition>(player1Ready1, player1SpeakPhrase, "Player1 ready");
             AddEdge<NoCondition>(player1Ready1, pickPhrase, "Pick a different phrase");
             AddEdge<NoCondition>(player1Ready1, pickPlayer2, "Pick a different player2");
-            AddEdge<CheckError>(player1SpeakPhrase, notifyPlayer2, "No error");
+            AddEdge<CheckPhoneCallError>(player1SpeakPhrase, notifyPlayer2, "No error");
             AddEdge<NoCondition>(player1SpeakPhrase, player1Ready1, "Error");
             AddEdge<NoCondition>(notifyPlayer2, player2Ready, "Player1 turn end");
             AddEdge<NoCondition>(player2Ready, listenSpeakAnswer, "Player2 ready");
-            AddEdge<CheckError>(listenSpeakAnswer, notifyPlayer1, "No error");
+            AddEdge<CheckPhoneCallError>(listenSpeakAnswer, notifyPlayer1, "No error");
             AddEdge<NoCondition>(listenSpeakAnswer, player2Ready, "Error");
             AddEdge<NoCondition>(notifyPlayer1, player1Ready2, "Player2 turn end");
             AddEdge<NoCondition>(player1Ready2, listenAnswer, "Player1 ready");
-            AddEdge<CheckError>(listenAnswer, endGame, "No error");
+            AddEdge<CheckPhoneCallError>(listenAnswer, endGame, "No error");
             AddEdge<NoCondition>(listenAnswer, player1Ready2, "Error");
 
             startNode = notStarted;
@@ -90,7 +91,7 @@ namespace PhoneGameService.Models
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
+                throw new PhoneGameClientException(string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
             }
         }
 

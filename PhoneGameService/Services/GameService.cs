@@ -8,6 +8,7 @@ using PhoneGameService.Models.GameTypes;
 using PhoneGameService.Models.EdgeConditionals;
 using PhoneGameService.Models.GameStates;
 using System.IO;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Services
 {
@@ -20,12 +21,12 @@ namespace PhoneGameService.Services
 
         public static Game GetGame(int gameId, TelephoneGameRepository repository)
         {
-            throw new NotImplementedException();
+            return repository.GetGame(gameId);
         }
 
         public static IList<Game> GetGames(Player player, TelephoneGameRepository repository)
         {
-            throw new NotImplementedException();
+            return repository.GetGames(player);
         }
 
         public static void RequestNewPlayer(PlayerCreationRequest request, TelephoneGameRepository repository)
@@ -45,7 +46,7 @@ namespace PhoneGameService.Services
 
         public static Game CreateNewGame<T>(Player player1, TelephoneGameRepository repository) where T : GameType
         {
-            Game newGame = new Game() { _gameType = GameTypeFactory.GetGameType<T>() };
+            Game newGame = repository.CreateGame<T>();
             newGame.AddPlayer(player1, repository);
             newGame._currentNodeNumber = newGame._gameType.startNode.id;
             return newGame;
@@ -85,21 +86,21 @@ namespace PhoneGameService.Services
         {
             if (!game.players.Values.Contains<Player>(player))
             {
-                throw new Exception(string.Format("Player {0} is not in game {1}", player.Name, game.ID));
+                throw new PhoneGameClientException(string.Format("Player {0} is not in game {1}", player.Name, game.ID));
             }
 
             KeyValuePair<int, Player> kvPair = game.players.FirstOrDefault<KeyValuePair<int, Player>>(p => p.Value.ID == player.ID);
             return kvPair.Key == game.gameType.GetNode(game.currentNodeNumber).activePlayerNumber;
         }
 
-        public static bool TransitionGameState(Game game, EdgeConditional edge, TelephoneGameRepository repository)
+        public static TransitionResult TransitionGameState(Game game, EdgeConditional edge, TelephoneGameRepository repository)
         {
             return edge.Transition(game, repository);
         }
 
         public static void RefreshGameState(Game game, TelephoneGameRepository repository)
         {
-            throw new NotImplementedException();
+            game = repository.GetGame(game.ID);
         }
 
         public static GameAudio GetGameAudio(AudioIdentifier audioID, TelephoneGameRepository repository)
@@ -154,6 +155,11 @@ namespace PhoneGameService.Services
                 sw.Close();
             }
 
+        }
+
+        public static GamePhrase GetPhraseById(int phraseId, TelephoneGameRepository repository)
+        {
+            return repository.GetPhraseByID(phraseId);
         }
     }
 }

@@ -7,10 +7,10 @@ namespace PhoneGameService.Models.EdgeConditionals
 {
     public class NoCondition : EdgeConditional
     {
-        public override bool Transition(Game game, Repositories.TelephoneGameRepository repository)
+        public override TransitionResult Transition(Game game, Repositories.TelephoneGameRepository repository)
         {
             ChangeState(game, repository);
-            return true;
+            return new TransitionResult();
         }
     }
 }

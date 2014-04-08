@@ -28,7 +28,7 @@ namespace PhoneGameService.Tests
 
                 EdgeConditional edge = _newGame.Edges.First<EdgeConditional>(e => e.nextNode.GetType().Name.Equals("PickPlayer"));
 
-                Assert.That(GameService.TransitionGameState(_newGame, edge, repository), "Transition failed");
+                Assert.That(GameService.TransitionGameState(_newGame, edge, repository).Success, "Transition failed");
 
                 _player2 = GameService.FindPlayer("15022967466", repository);
                 GameService.AddPlayerToGame(_player2, _newGame, repository);
@@ -47,7 +47,7 @@ namespace PhoneGameService.Tests
             using (var repository = new TelephoneGameRepository())
             {
                 EdgeConditional edge = _newGame.Edges.First<EdgeConditional>(e => e.nextNode.GetType().Name.Equals("PickPhrase"));
-                Assert.That(GameService.TransitionGameState(_newGame, edge, repository), "Transition failed");
+                Assert.That(GameService.TransitionGameState(_newGame, edge, repository).Success, "Transition failed");
             }
         }
 

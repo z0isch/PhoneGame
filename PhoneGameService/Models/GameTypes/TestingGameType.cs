@@ -5,6 +5,7 @@ using System.Text;
 using PhoneGameService.Repositories;
 using PhoneGameService.Models.GameStates;
 using PhoneGameService.Models.EdgeConditionals;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Models
 {
@@ -50,8 +51,8 @@ namespace PhoneGameService.Models
             AddEdge<NoCondition>(notStarted, pickPhrase, "Pick phrase");
             AddEdge<CheckNumberOfPlayers>(pickPlayer2, testNode, "Player 2 chosen");
             AddEdge<CheckPhraseChosen>(pickPhrase, testNode, "Phrase chosen");
-            AddEdge<CheckError>(testNode, endGame, "End game");
-            AddEdge<CheckError>(testNode, notStarted, "Restart game");
+            AddEdge<CheckPhoneCallError>(testNode, endGame, "End game");
+            AddEdge<CheckPhoneCallError>(testNode, notStarted, "Restart game");
 
             startNode = notStarted;
 
@@ -74,7 +75,7 @@ namespace PhoneGameService.Models
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
+                throw new PhoneGameClientException(string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
             }
         }
 

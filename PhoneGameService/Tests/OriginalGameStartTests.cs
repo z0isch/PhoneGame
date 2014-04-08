@@ -27,14 +27,14 @@ namespace PhoneGameService.Tests
                 _newGame = GameService.CreateNewGame<TwoPlayersOriginal>(_player1, repository);
                 Assert.That(null != _newGame, "Game not created");
 
-                success = GameService.TransitionGameState(_newGame, _newGame.Edges[0], repository);
+                success = GameService.TransitionGameState(_newGame, _newGame.Edges[0], repository).Success;
                 Assert.That(success, string.Format("Couldn't transition to {0}", _newGame.Edges[0].nextNode.routeName));
 
                 _player2 = GameService.FindPlayer("15022967466", repository);
                 GameService.AddPlayerToGame(_player2, _newGame, repository);
                 Assert.That(_newGame.enoughPlayers, "not enough players added");
 
-                success = GameService.TransitionGameState(_newGame, _newGame.Edges[0], repository);
+                success = GameService.TransitionGameState(_newGame, _newGame.Edges[0], repository).Success;
                 Assert.That(success, string.Format("Couldn't transition to {0}", _newGame.Edges[0].nextNode.routeName));
             }
         }

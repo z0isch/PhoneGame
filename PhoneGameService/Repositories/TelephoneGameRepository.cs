@@ -32,6 +32,8 @@ namespace PhoneGameService.Repositories
                                              }
                                            };
         private static GameType[] _gameTypes = { };
+        private static int _gameId = 1;
+        private static Dictionary<int, Game> _games = new Dictionary<int,Game>();
         private static PlayerCreationRequest[] _creationRequests = { };
 
         private static GamePhrase[] _gamePhrases = { new GamePhrase() { id=1, text = "blah" }, new GamePhrase() { id=2, text = "blah2" } };
@@ -50,14 +52,17 @@ namespace PhoneGameService.Repositories
         {
             player.OAuthIDs.Add(id);
         }
+
         internal Player GetPlayerByOAuthID(OAuthID id)
         {
             return _oauthToPlayers.FirstOrDefault(kvp => kvp.Key.Equals(id)).Value;
         }
+
         internal OAuthID GetOAuthIDByPlayer(Player player, OAuthProvider provider)
         {
             return _oauthToPlayers.FirstOrDefault(kvp => kvp.Value.ID == player.ID && kvp.Key.Provider.Name == provider.Name).Key;
         }
+
         internal void AddOrUpdateOAuthToken(Player player, HashedToken token)
         {
             var exisitngToken = player.OAuthTokens.Where(t => t.Provider.Name == token.Provider.Name).FirstOrDefault();
@@ -91,6 +96,7 @@ namespace PhoneGameService.Repositories
                 return false;
             }
         }
+
         internal IList<Player> GetPlayers()
         {
             return _players.ToList<Player>();
@@ -124,6 +130,30 @@ namespace PhoneGameService.Repositories
         internal IList<GamePhrase> GetAllGamePhrases()
         {
             return _gamePhrases.ToList();
+        }
+
+        internal Game CreateGame<T>() where T : GameType
+        {
+            Game newGame = new Game() { ID = _gameId, 
+                                        _gameType = GameTypeFactory.GetGameType<T>() };
+            _games.Add(_gameId, newGame);
+            _gameId++;
+            return newGame;
+        }
+
+        internal Game GetGame(int id)
+        {
+            return _games[id];
+        }
+
+        internal IList<Game> GetGames(Player player)
+        {
+            return _games.Values.Where<Game>(g => g.players.Values.Contains(player)).ToList<Game>();
+        }
+
+        internal GamePhrase GetPhraseByID(int phraseId)
+        {
+            return _gamePhrases.FirstOrDefault(p => p.id == phraseId);
         }
     }
 }

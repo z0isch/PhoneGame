@@ -85,12 +85,14 @@
     <Compile Include="Logging\ExceptionHandler.cs" />
     <Compile Include="Logging\LoggingConfiguration.cs" />
     <Compile Include="Logging\LogHelper.cs" />
+    <Compile Include="Logging\PhoneGameClientException.cs" />
     <Compile Include="Logging\RandomExceptionStringGenerator.cs" />
     <Compile Include="Models\AudioIdentifier.cs" />
     <Compile Include="Models\EdgeConditionals\CheckNumberOfPlayers.cs" />
     <Compile Include="Models\EdgeConditionals\CheckPhraseChosen.cs" />
-    <Compile Include="Models\EdgeConditionals\CheckError.cs" />
+    <Compile Include="Models\EdgeConditionals\CheckPhoneCallError.cs" />
     <Compile Include="Models\EdgeConditionals\NoCondition.cs" />
+    <Compile Include="Models\EdgeConditionals\TransitionResult.cs" />
     <Compile Include="Models\GameAudio.cs" />
     <Compile Include="Models\GamePhrase.cs" />
     <Compile Include="Models\GameScore.cs" />

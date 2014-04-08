@@ -5,6 +5,7 @@ using System.Text;
 using PhoneGameService.Models.GameStates;
 using PhoneGameService.Repositories;
 using Newtonsoft.Json;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Models.EdgeConditionals
 {
@@ -15,13 +16,13 @@ namespace PhoneGameService.Models.EdgeConditionals
         [JsonIgnore]
         public virtual GameStateNode nextNode { get; set; }
 
-        public abstract bool Transition(Game game, TelephoneGameRepository repository);
+        public abstract TransitionResult Transition(Game game, TelephoneGameRepository repository);
 
         protected virtual void ChangeState(Game game, TelephoneGameRepository repository)
         {
             if (!game.currentNode.edgeConditionals.Contains(this))
             {
-                throw new Exception("EdgeConditional is not in the GameStateNode");
+                throw new PhoneGameClientException("EdgeConditional is not in the GameStateNode");
             }
 
             game._currentNodeNumber = nextNode.id;

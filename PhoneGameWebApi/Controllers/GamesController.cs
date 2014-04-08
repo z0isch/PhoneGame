@@ -14,7 +14,8 @@ namespace PhoneGameWebApi.Controllers
     public class GamesController : ApiController
     {
         [Route("api/players/{playerId}/games")]
-        public IEnumerable<Game> Get(string playerId)
+        [HttpGet]
+        public IEnumerable<Game> GetAllGamesForPlayer(string playerId)
         {
             using (var repository = new TelephoneGameRepository())
             {
@@ -27,7 +28,46 @@ namespace PhoneGameWebApi.Controllers
                 {
                     throw new HttpResponseException(HttpStatusCode.NotFound);
                 }
-               
+
+            }
+        }
+
+        [HttpGet]
+        [Route("api/games/{gameId}")]
+        public Game GetGameById(int gameId)
+        {
+            //TODO authorize that the player has access to the given game
+
+            using (var repository = new TelephoneGameRepository())
+            {
+                var game = GameService.GetGame(gameId, repository);
+                if (game != null)
+                {
+                    return game;
+                }
+                else
+                {
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("api/games/{playerId}")]
+        public void AddNewGame(string playerId)
+        {
+            using (var repository = new TelephoneGameRepository())
+            {
+                var player = GameService.GetPlayerByID(playerId, repository);
+                if (player != null)
+                {
+                    GameService.CreateNewGame<TwoPlayersOriginal>(player, repository);
+                }
+                else
+                {
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                }
+
             }
         }
     }

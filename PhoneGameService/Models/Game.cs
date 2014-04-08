@@ -6,6 +6,7 @@ using System.Text;
 using PhoneGameService.Repositories;
 using PhoneGameService.Models.GameStates;
 using PhoneGameService.Models.EdgeConditionals;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Models
 {
@@ -37,17 +38,22 @@ namespace PhoneGameService.Models
         public int numberOfPlayers { get { return _players.Count; } }
         public int maxNumberOfPlayers { get { return _gameType.maxNumberOfPlayers; } }
         public int minNumberOfPlayers { get { return _gameType.minNumberOfPlayers; } }
-        
+
+        internal bool PlayerInGame(Player player, TelephoneGameRepository repository)
+        {
+            return _players.ContainsValue(player);
+        }
+
         internal void AddPlayer(Player player, TelephoneGameRepository repository)
         {
             if (_players.Count >= gameType.maxNumberOfPlayers)
             {
-                throw new Exception(string.Format("Cannot add more than the maximum number of players for this game type: {0}", gameType.maxNumberOfPlayers));
+                throw new PhoneGameClientException(string.Format("Cannot add more than the maximum number of players for this game type: {0}", gameType.maxNumberOfPlayers));
             }
 
             if (null != _players.Values.FirstOrDefault<Player>(p => p.ID == player.ID))
             {
-                throw new Exception("Player is already added to this game!");
+                throw new PhoneGameClientException("Player is already added to this game!");
             }
 
             _players[_nextPlayerNumber++] = player;

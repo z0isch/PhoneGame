@@ -5,17 +5,17 @@ using System.Text;
 
 namespace PhoneGameService.Models.EdgeConditionals
 {
-    public class CheckNumberOfPlayers : EdgeConditional
+    public class CheckPhoneCallError : EdgeConditional
     {
         public override TransitionResult Transition(Game game, Repositories.TelephoneGameRepository repository)
         {
-            if (game.numberOfPlayers >= game.gameType.minNumberOfPlayers)
+            if (!game.error)
             {
                 ChangeState(game, repository);
                 return new TransitionResult();
             }
 
-            return new TransitionResult() { Success = false, Message = "Not enough players to begin game" };
+            return new TransitionResult() { Success = false, Message = "An error occurred during the phone call" };
         }
     }
 }
