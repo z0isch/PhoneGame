@@ -16,8 +16,8 @@
       $urlRouterProvider.otherwise("/");
 
     })
-    .controller('LoginCtrl', ['$scope', '$ionicPlatform', '$http', 'authenticationService', '$state', '$ionicLoading',
-      function ($scope, $ionicPlatform, $http, authenticationService, $state, $ionicLoading) {
+    .controller('LoginCtrl', ['$scope', '$ionicPlatform', '$http', 'authenticationService', '$state', '$ionicLoading','$ionicNavBarDelegate',
+      function ($scope, $ionicPlatform, $http, authenticationService, $state, $ionicLoading, $ionicNavBarDelegate) {
         $ionicPlatform.ready(function () {
           $scope.googleLogin = function () {
             var promise = authenticationService.openOAuthWindow("google");
@@ -39,13 +39,11 @@
         });
       }
     ])
-    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService', 'playersService', '$ionicLoading',
-      function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService, $ionicLoading) {
+    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService', 'playersService', '$ionicLoading','$ionicNavBarDelegate',
+      function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService, $ionicLoading, $ionicNavBarDelegate) {
         $scope.loggedIn = false;
+        $scope.inGames = false;
 
-        $scope.goToLogin = function () {
-          $state.go('login');
-        }
         $scope.logOut = function () {
           authenticationService.logUserOut();
           $scope.loggedIn = false;
@@ -63,6 +61,8 @@
             var promise = playersService.getPlayer(credentials.phone_game_id);
             promise.then(function (player) {
               $scope.name = player.Name;
+              $scope.games = [{ title: 'Game1' }, { title: 'Game2' }]
+              $scope.inGames = true;
             }, function (error) {
               alert(error);
             });
@@ -70,6 +70,7 @@
             promise['finally'](function () {
               loadingScreen.hide();
             });
+            
           }
         });
       }

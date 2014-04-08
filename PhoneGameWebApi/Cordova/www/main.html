@@ -1,9 +1,25 @@
-﻿<div ng-if="!loggedIn">
-  <h3>Welcome to PhoneGame!</h3>
-  <p>Please login to continue</p>
-  <button class="button" ng-click="goToLogin()">Login</button>
-</div>
-<div ng-if="loggedIn">
-  <h3>Hey <span ng-bind="name"></span>!</h3>
-  <button class="button" ng-click="logOut()">Log Out</button>
-</div>
+﻿<ion-view title="PhoneGame">
+  <ion-nav-buttons side="right" ng-if="loggedIn">
+      <button class="button" ng-click="logOut()">Logout</button>
+  </ion-nav-buttons>
+  <ion-content has-header="true" padding="true">
+    <div ng-if="!loggedIn">
+      <h3>Welcome to PhoneGame!</h3>
+      <p>Please login to continue</p>
+      <a class="button" href="#/login">Login</a>
+    </div>
+    <div ng-if="loggedIn">
+      <h3>'Sup <span ng-bind="name"></span>?</h3>
+      <ion-list ng-if="inGames">
+        <div class="item item-divider">Current Games</div>
+        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right">
+          <i class="icon ion-chevron-right"></i>
+          {{game.title}}
+        </ion-item>
+      </ion-list>
+      <div ng-if="!inGames">
+        <h4>Join a game why don't you!</h4>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
