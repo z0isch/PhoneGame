@@ -158,6 +158,7 @@
     <Content Include="Cordova\www\img\ionic.png" />
     <Content Include="Cordova\www\index.html" />
     <Content Include="Cordova\www\js\app.js" />
+    <Content Include="Cordova\www\js\cordova.contacts.js" />
     <Content Include="Cordova\www\js\desktopMocks\oauth.js" />
     <Content Include="Cordova\www\js\desktopMocks\phoneGameUrl.js" />
     <Content Include="Cordova\www\js\oauth.js" />
@@ -259,6 +260,7 @@
     <Content Include="Cordova\www\lib\ionic\scss\_type.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_util.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_variables.scss" />
+    <Content Include="Cordova\www\js\desktopMocks\cordova.contacts.js" />
     <None Include="Properties\PublishProfiles\AWS Server.pubxml" />
   </ItemGroup>
   <PropertyGroup>
