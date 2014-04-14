@@ -150,6 +150,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Cordova\www\choosePlayer.html" />
     <Content Include="Cordova\www\.gitignore" />
     <Content Include="Cordova\www\config.xml" />
     <Content Include="Cordova\www\css\ionic.app.css" />

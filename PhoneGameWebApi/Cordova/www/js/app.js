@@ -1,5 +1,5 @@
 (function () {
-  angular.module('app', ['ionic', 'oauth', 'phonegame'])
+  angular.module('app', ['ionic', 'oauth', 'phonegame','cordova.contacts'])
     .config(function ($stateProvider, $urlRouterProvider) {
       $stateProvider
       .state('login', {
@@ -11,6 +11,11 @@
         url: '/',
         templateUrl: 'main.html',
         controller: 'MainCtrl'
+      })
+      .state('choosePlayer', {
+        url: '/choosePlayer',
+        templateUrl: 'choosePlayer.html',
+        controller: 'ChoosePlayerCtrl'
       });
 
       $urlRouterProvider.otherwise("/");
@@ -61,8 +66,8 @@
             var promise = playersService.getPlayer(credentials.phone_game_id);
             promise.then(function (player) {
               $scope.name = player.Name;
-              $scope.games = [{ title: 'Game1' }, { title: 'Game2' }]
-              $scope.inGames = true;
+              $scope.inGames = false;
+              $scope.games = [];
             }, function (error) {
               alert(error);
             });
@@ -72,6 +77,50 @@
             });
             
           }
+        });
+      }
+    ])
+    .controller('ChoosePlayerCtrl', ['$scope', '$ionicPlatform', '$http', '$state', '$ionicLoading', '$ionicNavBarDelegate','contacts','playersService',
+      function ($scope, $ionicPlatform, $http, $state, $ionicLoading, $ionicNavBarDelegate, contacts, playersService) {
+
+        $scope.playerPicked = function (player) {
+        }
+
+        $ionicPlatform.ready(function () {
+          var loadingScreen = $ionicLoading.show({
+            content: 'Getting contacts...',
+          });
+
+          var promise = contacts.find();
+          promise.then(function (contacts) {
+            playersService.getPlayersFromCordovaContacts(contacts).then(function (players) {
+              var registeredContacts = [],
+                unRegisteredContacts = [];
+
+              contacts.forEach(function (contact) {
+                if (contact.phoneNumbers) {
+                  var registered = contact.phoneNumbers.filter(function (number) {
+                    return players[number.value] !== undefined;
+                  }).length > 0;
+
+                  if (registered)
+                    registeredContacts.push(contact);
+                  else
+                    unRegisteredContacts.push(contact);
+                }
+              });
+
+              $scope.registeredContacts = registeredContacts;
+              $scope.unRegisteredContacts = unRegisteredContacts;
+            });
+          }, function (error) {
+            alert(error);
+          });
+
+          promise['finally'](function () {
+            loadingScreen.hide();
+          });
+
         });
       }
     ]);

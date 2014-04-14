@@ -1,15 +1,20 @@
 ﻿(function () {
-  angular.module('cordova.contacts', [''])
-	.service('contacts', ['$q', '$timeout',
-		function ($q, $timeout) {
-		  this.find = function (options) {
+  angular.module('cordova.contacts', [])
+	.service('contacts', ['$q',
+		function ($q) {
+		  this.find = function () {
 		    var deferred = $q.defer();
 
-		    navigator.contacts.find(fields, function (contacts) {
+		    var options = new ContactFindOptions();
+		    options.filter = "";
+		    options.multiple = true;
+
+		    navigator.contacts.find(["id", "displayName", "phoneNumbers"], function (contacts) {
 		      deferred.resolve(contacts);
 		    },
         function (error) {
-          deferred.reject("Failed to get contacts");
+
+          deferred.reject("Failed to get contacts: "+JSON.stringify(error));
         }, options);
 
 		    return deferred.promise;

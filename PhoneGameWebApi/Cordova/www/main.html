@@ -1,6 +1,6 @@
 ﻿<ion-view title="PhoneGame">
   <ion-nav-buttons side="right" ng-if="loggedIn">
-      <button class="button" ng-click="logOut()">Logout</button>
+      <button class="button button-clear button-stable" ng-click="logOut()">Logout</button>
   </ion-nav-buttons>
   <ion-content has-header="true" padding="true">
     <div ng-if="!loggedIn">
@@ -10,16 +10,26 @@
     </div>
     <div ng-if="loggedIn">
       <h3>'Sup <span ng-bind="name"></span>?</h3>
+       <div ng-if="!inGames">
+        <h4>Start a game why don't you</h4>
+      </div>
+      <a class="button button-clear button-positive" href="#/choosePlayer">Create a new game</a>
       <ion-list ng-if="inGames">
-        <div class="item item-divider">Current Games</div>
-        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right">
-          <i class="icon ion-chevron-right"></i>
+        <div class="item item-divider">Your turn</div>
+        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="/">
           {{game.title}}
         </ion-item>
+        <ion-item ng-if="games.length === 0">
+          None
+        </ion-item>
+        <div class="item item-divider">Waiting on other player</div>
+        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="/">
+          {{game.title}}
+        </ion-item>
+        <ion-item ng-if="games.length === 0">
+          None
+        </ion-item>
       </ion-list>
-      <div ng-if="!inGames">
-        <h4>Join a game why don't you!</h4>
-      </div>
     </div>
   </ion-content>
 </ion-view>
