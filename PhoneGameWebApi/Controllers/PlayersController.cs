@@ -7,10 +7,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using PhoneGameService.Logging;
 
 namespace PhoneGameWebApi.Controllers
 {
-    [Authorize]
     public class PlayersController : ApiController
     {
         public IEnumerable<Player> Get()
@@ -20,7 +20,6 @@ namespace PhoneGameWebApi.Controllers
                 return GameService.GetRecentPlayers(repository);
             }
         }
-
         public Player Get(string id)
         {
             using (var repository = new TelephoneGameRepository())

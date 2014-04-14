@@ -43,7 +43,12 @@ namespace PhoneGameService.Services
         {
             return repository.GetAllGameTypes();
         }
-
+        public static Game CreateNewGame<T>(TelephoneGameRepository repository) where T : GameType
+        {
+            Game newGame = repository.CreateGame<T>();
+            newGame._currentNodeNumber = newGame._gameType.startNode.id;
+            return newGame;
+        }
         public static Game CreateNewGame<T>(Player player1, TelephoneGameRepository repository) where T : GameType
         {
             Game newGame = repository.CreateGame<T>();

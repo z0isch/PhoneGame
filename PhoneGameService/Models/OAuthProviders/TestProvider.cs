@@ -16,14 +16,14 @@ namespace PhoneGameService.Models.OAuthProviders
 
         public override OAuthID GetIdFromProvider(OAuthTokens.UnEncryptedToken token)
         {
-            return new OAuthID() { ID = "1", Provider = this };
+            return new OAuthID() { ID = token.Token, Provider = this };
         }
 
         public override OAuthTokens.UnEncryptedToken GetToken(string code)
         {
             return new UnEncryptedToken()
             {
-                Token = "Test",
+                Token = code,
                 Provider = this
             };
         }

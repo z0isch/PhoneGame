@@ -26,9 +26,14 @@ namespace PhoneGameService.Repositories
                                              },
                                              new Player { ID="67516D71-8B31-4B1F-8DC2-6A0E60E92605", Name="Ellie Fridell", TelephoneNumber= new PhoneNumber() { ID=3, Number="15027625695"} },
                                              new Player { ID="A7664B0C-967D-4CE6-B97C-A037ADF046C7",
-                                                 Name="Test Testly", 
-                                                 TelephoneNumber=new PhoneNumber(){ID=4,Number="TEST"},
+                                                 Name="Tester1", 
+                                                 TelephoneNumber=new PhoneNumber(){ID=4,Number="TEST1"},
                                                  OAuthIDs = new List<OAuthID>() {new OAuthID(){ ID = "1", Provider= new TestProvider()}}
+                                             },
+                                             new Player { ID="4276F19E-F5D6-4484-A307-F6395AF273F8",
+                                                 Name="Tester2", 
+                                                 TelephoneNumber=new PhoneNumber(){ID=5,Number="TEST2"},
+                                                 OAuthIDs = new List<OAuthID>() {new OAuthID(){ ID = "2", Provider= new TestProvider()}}
                                              }
                                            };
         private static GameType[] _gameTypes = { };
@@ -41,7 +46,8 @@ namespace PhoneGameService.Repositories
         private static Dictionary<OAuthID, Player> _oauthToPlayers = new Dictionary<OAuthID, Player>()
         {
             {new OAuthID(){ ID = "113626801228454940516", Provider= new Google()},_players[1] },
-            {new OAuthID(){ ID = "1", Provider= new TestProvider()},_players[3] }
+            {new OAuthID(){ ID = "1", Provider= new TestProvider()},_players[3] },
+            {new OAuthID(){ ID = "2", Provider= new TestProvider()},_players[4] }
         };
 
         public TelephoneGameRepository()

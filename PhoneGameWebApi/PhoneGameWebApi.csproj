@@ -217,11 +217,6 @@
     <Content Include="Views\Home\GoogleOAuth.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\share\HiddenSettings.config">
-      <Link>HiddenSettings.config</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Cordova\www\lib\ionic\fonts\ionicons.eot" />
     <Content Include="Cordova\www\lib\ionic\fonts\ionicons.ttf" />
     <Content Include="Cordova\www\lib\ionic\fonts\ionicons.woff" />
@@ -259,6 +254,7 @@
     <Content Include="Cordova\www\lib\ionic\scss\_type.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_util.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_variables.scss" />
+    <Content Include="HiddenSettings.config" />
     <None Include="Properties\PublishProfiles\AWS Server.pubxml" />
   </ItemGroup>
   <PropertyGroup>

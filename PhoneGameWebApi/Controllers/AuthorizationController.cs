@@ -31,14 +31,20 @@ namespace PhoneGameWebApi.Controllers
                         var encrypted = OAuthService.EncryptToken(token, id);
                         var hashed = OAuthService.HashTokenWithRandomSalt(token);
                         Player p = OAuthService.GetPlayerByOAuthID(repo, id);
-
-                        OAuthService.SaveTokenFromOAuthProvider(repo, hashed, id);
-                        return new
+                        if (p != null)
                         {
-                            oauth_encrypted_token = encrypted.Token,
-                            oauth_provider = id.Provider.Name,
-                            phone_game_id = p.ID,
-                        };
+                            OAuthService.SaveTokenFromOAuthProvider(repo, hashed, id);
+                            return new
+                            {
+                                oauth_encrypted_token = encrypted.Token,
+                                oauth_provider = id.Provider.Name,
+                                phone_game_id = p.ID,
+                            };
+                        }
+                        else
+                        {
+                            throw new HttpResponseException(HttpStatusCode.NotFound);
+                        }
                     }
                 }
                 else

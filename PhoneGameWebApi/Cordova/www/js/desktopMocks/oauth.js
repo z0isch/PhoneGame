@@ -6,7 +6,8 @@
         var deferred = $q.defer();
 
         authorizationService.getOAuthUrl("TestProvider").then(function (data) {
-          authorizationService.getToken("TestProvider", "DoesntMatter").then(function (data) {
+          var testUser = prompt("Which test user? (1,2, etc.)");
+          authorizationService.getToken("TestProvider", testUser).then(function (data) {
             deferred.resolve(data);
           });
         });
