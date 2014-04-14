@@ -255,8 +255,11 @@
     <Content Include="Cordova\www\lib\ionic\scss\_type.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_util.scss" />
     <Content Include="Cordova\www\lib\ionic\scss\_variables.scss" />
+<<<<<<< HEAD
     <Content Include="HiddenSettings.config" />
+=======
     <Content Include="Cordova\www\js\desktopMocks\cordova.contacts.js" />
+>>>>>>> 232ddd5309703bd8bc2ced4a36c5dc6dd95ae73b
     <None Include="Properties\PublishProfiles\AWS Server.pubxml" />
   </ItemGroup>
   <PropertyGroup>
