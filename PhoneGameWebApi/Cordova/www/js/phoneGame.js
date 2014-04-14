@@ -1,13 +1,13 @@
 ﻿(function () {
-  angular.module('phoneGame', ['oauth','phoneGameUrl'])
-  .service('playersService', ['$http', '$q', 'authenticationService', 'phoneGameBaseUrl',
-    function ($http, $q, authenticationService, phoneGameBaseUrl) {
+  angular.module('phonegame', ['oauth','phonegame.url'])
+  .service('playersService', ['$http', '$q', 'authenticationService', 'baseUrl',
+    function ($http, $q, authenticationService, baseUrl) {
 
       this.getPlayer = function (id) {
         var deferred = $q.defer();
         
         var h = authenticationService.getOAuthHeaders();
-        $http.get(phoneGameBaseUrl + '/api/players/' + id, { headers: h, responseType:'json' })
+        $http.get(baseUrl + '/api/players/' + id, { headers: h, responseType: 'json' })
          .success(function (data, status, headers, config) {
            deferred.resolve(data);
          })
@@ -24,13 +24,13 @@
       }
     }
   ])
-  .service('authorizationService',['$http', '$q','phoneGameBaseUrl',
-    function ($http, $q, phoneGameBaseUrl) {
+  .service('authorizationService', ['$http', '$q', 'baseUrl',
+    function ($http, $q, baseUrl) {
 
       this.getToken = function (provider, code) {
         var deferred = $q.defer();
         
-        $http.get(phoneGameBaseUrl + '/api/authorization/token/' + provider + '/?oauthcode=' + code)
+        $http.get(baseUrl + '/api/authorization/token/' + provider + '/?oauthcode=' + code)
         .success(function (data, status, headers, config) {
           deferred.resolve(data);
         })
@@ -43,7 +43,7 @@
 
       this.getOAuthUrl = function(provider) {
         var deferred = $q.defer();
-        $http.get(phoneGameBaseUrl + '/api/authorization/GetOAuthUrl/' + provider)
+        $http.get(baseUrl + '/api/authorization/GetOAuthUrl/' + provider)
         .success(function (data, status, headers, config) {
           //Trim the quotes around the url
           if (data.substr(0, 1) === '"') data = data.substring(1);

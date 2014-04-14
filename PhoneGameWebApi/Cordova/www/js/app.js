@@ -1,5 +1,5 @@
 (function () {
-  angular.module('app', ['ionic', 'oauth', 'phoneGame'])
+  angular.module('app', ['ionic', 'oauth', 'phonegame'])
     .config(function ($stateProvider, $urlRouterProvider) {
       $stateProvider
       .state('login', {

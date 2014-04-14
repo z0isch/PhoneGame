@@ -160,10 +160,10 @@
     <Content Include="Cordova\www\js\app.js" />
     <Content Include="Cordova\www\js\cordova.contacts.js" />
     <Content Include="Cordova\www\js\desktopMocks\oauth.js" />
-    <Content Include="Cordova\www\js\desktopMocks\phoneGameUrl.js" />
+    <Content Include="Cordova\www\js\desktopMocks\phonegame.url.js" />
     <Content Include="Cordova\www\js\oauth.js" />
-    <Content Include="Cordova\www\js\phoneGame.js" />
-    <Content Include="Cordova\www\js\phoneGameUrl.js" />
+    <Content Include="Cordova\www\js\phonegame.js" />
+    <Content Include="Cordova\www\js\phonegame.url.js" />
     <Content Include="Cordova\www\lib\ionic\css\ionic.css" />
     <Content Include="Cordova\www\lib\ionic\css\ionic.min.css" />
     <Content Include="Cordova\www\lib\ionic\fonts\ionicons.svg" />

@@ -1,5 +1,5 @@
 ﻿(function () {
-  angular.module('oauth', ['phoneGame'])
+  angular.module('oauth', ['phonegame'])
   .service('authenticationService', ['$http', '$q','authorizationService',
     function ($http, $q, authorizationService) {
       this.openOAuthWindow = function (provider) {
