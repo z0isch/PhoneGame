@@ -34,7 +34,8 @@ namespace PhoneGameService.Services
                 { "answer_url", string.Format("{0}/{1}/{2}/speak", Server.AnswerURLBase, game.ID, callId) }, 
                 { "answer_method", "GET" },
                 { "time_limit", "60" },
-                { "caller_name", "PhoneGame" }
+                { "caller_name", "PhoneGame" },
+                { "callback_url", string.Format("{0}/{1}/{2}/callback", Server.AnswerURLBase, game.ID, callId) }
             });
 
             // The "Outbound call" API response has four properties -
@@ -42,7 +43,7 @@ namespace PhoneGameService.Services
             // error - contains the error response sent back from the server.
             if (response.Data != null)
             {
-                if (int.Parse(response.StatusCode.ToString()) >= 400)
+                if (!string.IsNullOrEmpty(response.Data.error))
                 {
                     _log.ErrorFormat("Error response from server: {0}", response.Data.error);
                 }
@@ -50,7 +51,7 @@ namespace PhoneGameService.Services
             else
             {
                 // ErrorMessage - contains error related to network failure.
-                Console.WriteLine(response.ErrorMessage);
+                _log.ErrorFormat(response.ErrorMessage);
             }
         }
     }

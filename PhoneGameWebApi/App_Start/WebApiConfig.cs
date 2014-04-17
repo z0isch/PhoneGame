@@ -24,6 +24,10 @@ namespace PhoneGameWebApi
 
             config.MessageHandlers.Add(new OAuthHandler());
 
+            //config.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("text/html"));
+            var xml = GlobalConfiguration.Configuration.Formatters.XmlFormatter;
+            xml.UseXmlSerializer = true;
+
             /* These could be used for RPC style calls
              * 
             //Route Catches the GET PUT DELETE typical REST based interactions (add more if needed)

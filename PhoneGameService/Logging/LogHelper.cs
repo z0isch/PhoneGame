@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using log4net;
 
-namespace PhoneGameService
+namespace PhoneGameService.Logging
 {
     public static class LogHelper
     {

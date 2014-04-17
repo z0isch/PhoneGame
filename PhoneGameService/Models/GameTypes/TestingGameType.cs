@@ -75,7 +75,7 @@ namespace PhoneGameService.Models
             }
             catch (Exception ex)
             {
-                throw new PhoneGameClientException(string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
+                throw new PhoneGameClientException(game, string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
             }
         }
 

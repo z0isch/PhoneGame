@@ -9,24 +9,36 @@ using PhoneGameService.Services;
 using PhoneGameService.Repositories;
 using PhoneGameService.Models.EdgeConditionals;
 using PhoneGameService.Logging;
+using log4net;
 
 namespace PhoneGameWebApi.Controllers
 {
     public class GamePlayController : ApiController
     {
+        private static ILog log = LogManager.GetLogger("GamePlayController");
+
         [Route("api/gameplay/{gameId}")]
         [HttpGet]
         public Game GetGameState(int gameId)
         {
-            // TODO authorize the player is in this game
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                Game game = GameService.GetGame(gameId, repository);
-                if(null == game)
+                // TODO authorize the player is in this game
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                    Game game = GameService.GetGame(gameId, repository);
+                    if (null == game)
+                    {
+                        throw new PhoneGameAPIException("No such game");
+                    }
+                    return game;
                 }
-                return game;
+            }
+            catch (PhoneGameAPIException) { throw; }
+            catch (Exception ex)
+            {
+                ExceptionHandler.LogAll(log, ex); 
+                throw new PhoneGameAPIException(HttpStatusCode.InternalServerError, ex.Message); 
             }
         }
 
@@ -106,28 +118,28 @@ namespace PhoneGameWebApi.Controllers
         [HttpPost]
         public void PickPhraseForGame(int gameId, [FromUri] int phraseId)
         {
-            // TODO authorize the player is in this game
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                Game game = GameService.GetGame(gameId, repository);
-                if (null == game)
+                // TODO authorize the player is in this game
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-                GamePhrase phrase = GameService.GetPhraseById(phraseId, repository);
-                if (null == phrase)
-                {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Bad phrase id" });
-                }
+                    Game game = GameService.GetGame(gameId, repository);
+                    if (null == game)
+                    {
+                        throw new HttpResponseException(HttpStatusCode.NotFound);
+                    }
+                    GamePhrase phrase = GameService.GetPhraseById(phraseId, repository);
+                    if (null == phrase)
+                    {
+                        throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Bad phrase id" });
+                    }
 
-                try
-                {
                     GameService.PickPhraseForGame(phrase, game, repository);
                 }
-                catch (PhoneGameClientException ex)
-                {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = ex.Message });
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = ex.Message });
             }
         }
 

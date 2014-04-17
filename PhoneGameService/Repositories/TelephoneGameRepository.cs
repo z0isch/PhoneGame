@@ -147,9 +147,17 @@ namespace PhoneGameService.Repositories
             return newGame;
         }
 
+        /// <summary>
+        /// Get a Game object.  Returns null if the Game cannot be found.
+        /// </summary>
+        /// <param name="id">The ID of the Game</param>
+        /// <returns>A valid Game object with the given id, or null</returns>
         internal Game GetGame(int id)
         {
-            return _games[id];
+            if (_games.ContainsKey(id))
+                return _games[id];
+            else
+                return null;
         }
 
         internal IList<Game> GetGames(Player player)

@@ -32,6 +32,10 @@ namespace PhoneGameService.Models
         private int _nextPlayerNumber = 1;
         public IDictionary<int, Player> players { get { return _players; } }
 
+        private Dictionary<int, GameAudio> _audioList = new Dictionary<int, GameAudio>();
+        private int _nextAudioSequence = 1;
+        public Dictionary<int, GameAudio> audioList { get; set; }
+
         public IList<EdgeConditional> Edges { get { return currentNode.edgeConditionals; } }
 
         public bool enoughPlayers { get { return _players.Count >= minNumberOfPlayers; } }
@@ -48,12 +52,12 @@ namespace PhoneGameService.Models
         {
             if (_players.Count >= gameType.maxNumberOfPlayers)
             {
-                throw new PhoneGameClientException(string.Format("Cannot add more than the maximum number of players for this game type: {0}", gameType.maxNumberOfPlayers));
+                throw new PhoneGameClientException(this, string.Format("Cannot add more than the maximum number of players for this game type: {0}", gameType.maxNumberOfPlayers));
             }
 
             if (null != _players.Values.FirstOrDefault<Player>(p => p.ID == player.ID))
             {
-                throw new PhoneGameClientException("Player is already added to this game!");
+                throw new PhoneGameClientException(this, "Player is already added to this game!");
             }
 
             _players[_nextPlayerNumber++] = player;

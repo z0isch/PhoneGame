@@ -11,11 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Security;
 using System.Web;
+using log4net;
 
 namespace PhoneGameService.Services
 {
     public static class OAuthService
     {
+        private static ILog log = LogManager.GetLogger("OAuthService");
+
         public static OAuthID GetOAuthIDByPlayer(TelephoneGameRepository repository, Player player, OAuthProvider provider)
         {
             var p = repository.GetOAuthIDByPlayer(player, provider);

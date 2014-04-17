@@ -17,7 +17,7 @@ namespace PhoneGameWebApi.Controllers
 
         public ActionResult Index()
         {
-            LogHelper.Begin(_log, "Index()");
+            _log.Debug("Index()");
             return View();
         }
 

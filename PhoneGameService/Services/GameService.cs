@@ -9,11 +9,14 @@ using PhoneGameService.Models.EdgeConditionals;
 using PhoneGameService.Models.GameStates;
 using System.IO;
 using PhoneGameService.Logging;
+using log4net;
 
 namespace PhoneGameService.Services
 {
     public static class GameService
     {
+        private static ILog log = LogManager.GetLogger("GameService");
+
         public static IList<Player> GetRecentPlayers(TelephoneGameRepository repository)
         {
             return repository.GetPlayers();
@@ -21,7 +24,13 @@ namespace PhoneGameService.Services
 
         public static Game GetGame(int gameId, TelephoneGameRepository repository)
         {
-            return repository.GetGame(gameId);
+            LogHelper.Begin(log, "GetGame()");
+            try
+            {
+                return repository.GetGame(gameId);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetGame()"); }
         }
 
         public static IList<Game> GetGames(Player player, TelephoneGameRepository repository)
@@ -91,7 +100,7 @@ namespace PhoneGameService.Services
         {
             if (!game.players.Values.Contains<Player>(player))
             {
-                throw new PhoneGameClientException(string.Format("Player {0} is not in game {1}", player.Name, game.ID));
+                throw new PhoneGameClientException(game, string.Format("Player {0} is not in game {1}", player.Name, game.ID));
             }
 
             KeyValuePair<int, Player> kvPair = game.players.FirstOrDefault<KeyValuePair<int, Player>>(p => p.Value.ID == player.ID);

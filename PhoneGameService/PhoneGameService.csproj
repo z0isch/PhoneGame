@@ -121,6 +121,9 @@
     <Compile Include="Models\OAuthTokens\HashedToken.cs" />
     <Compile Include="Models\OAuthTokens\OAuthToken.cs" />
     <Compile Include="Models\OAuthTokens\UnEncryptedToken.cs" />
+    <Compile Include="Models\Plivo\PlivoResponse.cs" />
+    <Compile Include="Models\Plivo\Record.cs" />
+    <Compile Include="Models\Plivo\Speak.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="Repositories\TelephoneGameRepository.cs" />
     <Compile Include="Services\GameService.cs" />

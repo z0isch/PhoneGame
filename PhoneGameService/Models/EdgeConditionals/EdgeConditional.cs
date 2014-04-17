@@ -22,7 +22,7 @@ namespace PhoneGameService.Models.EdgeConditionals
         {
             if (!game.currentNode.edgeConditionals.Contains(this))
             {
-                throw new PhoneGameClientException("EdgeConditional is not in the GameStateNode");
+                throw new PhoneGameClientException(game, "EdgeConditional is not in the GameStateNode");
             }
 
             game._currentNodeNumber = nextNode.id;
