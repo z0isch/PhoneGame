@@ -16,6 +16,16 @@
         url: '/choosePlayer',
         templateUrl: 'choosePlayer.html',
         controller: 'ChoosePlayerCtrl'
+      })
+      .state('pickPhrase', {
+        url: '/pickPhrase/{gameId}',
+        templateUrl: 'pickPhrase.html',
+        controller: 'PickPhraseCtrl'
+      })
+      .state('game', {
+        url: '/game/{gameId}',
+        templateUrl: 'game.html',
+        controller: 'GameCtrl'
       });
 
       $urlRouterProvider.otherwise("/");
@@ -44,8 +54,10 @@
         });
       }
     ])
-    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService', 'playersService', '$ionicLoading','$ionicNavBarDelegate',
-      function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService, $ionicLoading, $ionicNavBarDelegate) {
+    .controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService',
+      'playersService', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
+      function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService,
+       $ionicLoading, $ionicNavBarDelegate, gameService) {
         $scope.loggedIn = false;
         $scope.inGames = false;
 
@@ -66,24 +78,51 @@
             var promise = playersService.getPlayer(credentials.phone_game_id);
             promise.then(function (player) {
               $scope.name = player.Name;
-              $scope.inGames = false;
-              $scope.games = [];
+              var gamePromise = gameService.getGames(credentials.phone_game_id).then(function (data) {
+                if (data.length > 0) {
+                  $scope.inGames = true;
+                  $scope.games = data;
+                }
+                else {
+                  $scope.inGames = false;
+                }
+              }, function (error) {
+                alert(error);
+              });
+              gamePromise['finally'](function () {
+                loadingScreen.hide();
+              });
+
             }, function (error) {
               alert(error);
-            });
-
-            promise['finally'](function () {
               loadingScreen.hide();
-            });
-            
+            });            
           }
         });
       }
     ])
-    .controller('ChoosePlayerCtrl', ['$scope', '$ionicPlatform', '$http', '$state', '$ionicLoading', '$ionicNavBarDelegate','contacts','playersService',
-      function ($scope, $ionicPlatform, $http, $state, $ionicLoading, $ionicNavBarDelegate, contacts, playersService) {
+    .controller('ChoosePlayerCtrl', ['$scope', '$ionicPlatform', '$http',
+      '$state', '$ionicLoading', '$ionicNavBarDelegate', 'contacts', 'playersService','gameService',
+      function ($scope, $ionicPlatform, $http, $state, $ionicLoading, $ionicNavBarDelegate, contacts, playersService, gameService) {
 
         $scope.playerPicked = function (player) {
+          if (player.registered) {
+
+            var loadingScreen = $ionicLoading.show({
+              content: 'Creating Game...',
+            });
+            var startGamePromise = gameService.startNewGameWith(player.phoneGameId).then(function (data) {
+              $state.go('pickPhrase', { gameId: data.ID });
+            }, function (error) {
+              alert(error);
+            });
+            startGamePromise['finally'](function () {
+              loadingScreen.hide();
+            });
+          }
+
+          else
+            alert("Sorry the other player must be registered!");
         }
 
         $ionicPlatform.ready(function () {
@@ -93,35 +132,70 @@
 
           var promise = contacts.find();
           promise.then(function (contacts) {
-            playersService.getPlayersFromCordovaContacts(contacts).then(function (players) {
-              var registeredContacts = [],
-                unRegisteredContacts = [];
-
-              contacts.forEach(function (contact) {
-                if (contact.phoneNumbers) {
-                  var registered = contact.phoneNumbers.filter(function (number) {
-                    return players[number.value] !== undefined;
-                  }).length > 0;
-
-                  if (registered)
-                    registeredContacts.push(contact);
-                  else
-                    unRegisteredContacts.push(contact);
-                }
+            var getPlayers = playersService.getPlayersFromCordovaContacts(contacts);
+            getPlayers.then(function (players) {
+              $scope.registeredContacts = players.filter(function (p) {
+                return p.registered;
               });
-
-              $scope.registeredContacts = registeredContacts;
-              $scope.unRegisteredContacts = unRegisteredContacts;
+              $scope.unRegisteredContacts = players.filter(function (p) {
+                return !p.registered;
+              });;
             });
+
+            getPlayers['finally'](function () {
+              loadingScreen.hide();
+            });
+
+          }, function (error) {
+            alert(error);
+            loadingScreen.hide();
+          });
+        });
+      }
+    ])
+    .controller('PickPhraseCtrl', ['$scope', '$ionicPlatform', '$http',
+      '$state', '$stateParams','$ionicLoading', '$ionicNavBarDelegate','phraseService',
+      function ($scope, $ionicPlatform, $http, $state,$stateParams, $ionicLoading, $ionicNavBarDelegate, phraseService) {
+        $scope.phrasePicked = function(phrase) {
+          var loadingScreen = $ionicLoading.show({
+            content: 'Choosing Phrase...',
+          });
+          var promise = phraseService.pickPhrase($stateParams.gameId, phrase.id).then(function (data) {
+            $state.go('game', { gameId: data.ID });
           }, function (error) {
             alert(error);
           });
-
           promise['finally'](function () {
             loadingScreen.hide();
           });
-
+        }
+        var loadingScreen = $ionicLoading.show({
+          content: 'Getting Phrases...',
+        });
+        var promise = phraseService.getPhrases().then(function (data) {
+          $scope.phrases = data;
+        }, function (error) {
+          alert(error);
+        });
+        promise['finally'](function () {
+          loadingScreen.hide();
         });
       }
+    ])
+    .controller('GameCtrl', ['$scope', '$ionicPlatform', '$http',
+        '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
+        function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, gameService) {
+          var loadingScreen = $ionicLoading.show({
+            content: 'Getting Game...',
+          });
+          var promise = gameService.getGame($stateParams.gameId).then(function (data) {
+            $scope.game = data;
+          }, function (error) {
+            alert(error);
+          });
+          promise['finally'](function () {
+            loadingScreen.hide();
+          });
+        }
     ]);
 })();

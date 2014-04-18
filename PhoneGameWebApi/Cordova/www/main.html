@@ -16,15 +16,15 @@
       <a class="button button-clear button-positive" href="#/choosePlayer">Create a new game</a>
       <ion-list ng-if="inGames">
         <div class="item item-divider">Your turn</div>
-        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="/">
-          {{game.title}}
+        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="#/game/{{game.ID}}">
+          {{game.ID}}
         </ion-item>
         <ion-item ng-if="games.length === 0">
           None
         </ion-item>
         <div class="item item-divider">Waiting on other player</div>
-        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="/">
-          {{game.title}}
+        <ion-item ng-repeat="game in games" item="game" item-type="a" class="item-icon-right" href="#/game/{{game.ID}}">
+          {{game.ID}}
         </ion-item>
         <ion-item ng-if="games.length === 0">
           None

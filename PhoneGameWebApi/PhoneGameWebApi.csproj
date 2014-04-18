@@ -140,7 +140,10 @@
     <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PhoneServiceController.cs" />
+    <Compile Include="Controllers\PhrasesController.cs" />
     <Compile Include="Controllers\PlayersController.cs" />
+    <Content Include="Cordova\www\pickPhrase.html" />
+    <Content Include="Cordova\www\game.html" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
