@@ -53,19 +53,31 @@ namespace PhoneGameWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("api/games/{playerId}")]
-        public void AddNewGame(string playerId)
+        [Route("api/games/")]
+        public Game AddNewGame([FromBody]JObject obj)
         {
             using (var repository = new TelephoneGameRepository())
             {
-                var player = GameService.GetPlayerByID(playerId, repository);
-                if (player != null)
+                List<Player> players = obj["playerIds"].Select( id=> GameService.GetPlayerByID(id.ToString(), repository)).ToList();
+
+                if (players.Any(p => p==null))
                 {
-                    GameService.CreateNewGame<TwoPlayersOriginal>(player, repository);
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
                 }
                 else
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                    if (players.Count == 2)
+                    {
+                        var game = GameService.CreateNewGame<TwoPlayersOriginal>(players[0],repository);
+                        GameService.TransitionGameState(game, game.Edges[0], repository);
+                        GameService.AddPlayerToGame(players[1], game, repository);
+                        GameService.TransitionGameState(game, game.Edges[0], repository);
+                        return game;
+                    }
+                    else
+                    {
+                        throw new HttpResponseException(HttpStatusCode.NotImplemented);
+                    }
                 }
 
             }
