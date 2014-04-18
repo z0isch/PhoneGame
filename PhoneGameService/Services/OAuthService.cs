@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web.Security;
 using System.Web;
 using log4net;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Services
 {
@@ -21,13 +22,26 @@ namespace PhoneGameService.Services
 
         public static OAuthID GetOAuthIDByPlayer(TelephoneGameRepository repository, Player player, OAuthProvider provider)
         {
-            var p = repository.GetOAuthIDByPlayer(player, provider);
-            return p;
+            LogHelper.Begin(log, "GetOAuthIDByPlayer()");
+            try
+            {
+                var p = repository.GetOAuthIDByPlayer(player, provider);
+                return p;
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetOAuthIDByPlayer()"); }
         }
+
         public static Player GetPlayerByOAuthID(TelephoneGameRepository repository, OAuthID id)
         {
-            var p = repository.GetPlayerByOAuthID(id);
-            return p;
+            LogHelper.Begin(log, "GetPlayerByOAuthID()");
+            try
+            {
+                var p = repository.GetPlayerByOAuthID(id);
+                return p;
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetPlayerByOAuthID()"); }
         }
 
         /// <summary>
@@ -35,8 +49,14 @@ namespace PhoneGameService.Services
         /// </summary>
         public static void SaveTokenFromOAuthProvider(TelephoneGameRepository repository, HashedToken token, OAuthID id)
         {
-            var player = repository.GetPlayerByOAuthID(id);
-            repository.AddOrUpdateOAuthToken(player, token);
+            LogHelper.Begin(log, "SaveTokenFromOAuthProvider()");
+            try
+            {
+                var player = repository.GetPlayerByOAuthID(id);
+                repository.AddOrUpdateOAuthToken(player, token);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "SaveTokenFromOAuthProvider()"); }
         }
 
         /// <summary>
@@ -44,66 +64,102 @@ namespace PhoneGameService.Services
         /// </summary>
         public static bool VerifyPlayer(TelephoneGameRepository repository, Player player, UnEncryptedToken token)
         {
-            return repository.VerifyPlayer(player, token);
+            LogHelper.Begin(log, "VerifyPlayer()");
+            try
+            {
+                return repository.VerifyPlayer(player, token);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "VerifyPlayer()"); }
         }
 
         public static HashedToken HashTokenWithRandomSalt(UnEncryptedToken token)
         {
-            return HashToken(token, RandomString(10));
+            LogHelper.Begin(log, "VerifyPlayer()");
+            try
+            {
+                return HashToken(token, RandomString(10));
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "VerifyPlayer()"); }
         }
 
         public static HashedToken HashToken(UnEncryptedToken token, string salt)
         {
-            var tokenBytes = Encoding.UTF8.GetBytes(token.Token);
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-            HashAlgorithm algorithm = new SHA256Managed();
-
-            byte[] plainTextWithSaltBytes =
-                new byte[tokenBytes.Length + saltBytes.Length];
-
-            for (int i = 0; i < tokenBytes.Length; i++)
+            LogHelper.Begin(log, "HashToken()");
+            try
             {
-                plainTextWithSaltBytes[i] = tokenBytes[i];
+                var tokenBytes = Encoding.UTF8.GetBytes(token.Token);
+                var saltBytes = Encoding.UTF8.GetBytes(salt);
+
+                HashAlgorithm algorithm = new SHA256Managed();
+
+                byte[] plainTextWithSaltBytes =
+                    new byte[tokenBytes.Length + saltBytes.Length];
+
+                for (int i = 0; i < tokenBytes.Length; i++)
+                {
+                    plainTextWithSaltBytes[i] = tokenBytes[i];
+                }
+                for (int i = 0; i < saltBytes.Length; i++)
+                {
+                    plainTextWithSaltBytes[tokenBytes.Length + i] = saltBytes[i];
+                }
+
+                return new HashedToken()
+                {
+                    Token = System.Convert.ToBase64String(algorithm.ComputeHash(plainTextWithSaltBytes)),
+                    Provider = token.Provider,
+                    Salt = salt
+                };
             }
-            for (int i = 0; i < saltBytes.Length; i++)
-            {
-                plainTextWithSaltBytes[tokenBytes.Length + i] = saltBytes[i];
-            }
-
-            return new HashedToken()
-            {
-                Token = System.Convert.ToBase64String(algorithm.ComputeHash(plainTextWithSaltBytes)),
-                Provider = token.Provider,
-                Salt = salt
-            };
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "HashToken()"); }
         }
 
         public static EncryptedToken EncryptToken(UnEncryptedToken token, OAuthID id)
         {
-            var encrypted = MachineKey.Protect(Encoding.UTF8.GetBytes(token.Token), id.ID);
-            
-            return new EncryptedToken()
+            LogHelper.Begin(log, "EncryptToken()");
+            try
             {
-                Token = System.Convert.ToBase64String(encrypted),
-                MachineKeyPurpose = id.ID,
-                Provider = token.Provider
-            };
+                var encrypted = MachineKey.Protect(Encoding.UTF8.GetBytes(token.Token), id.ID);
+
+                return new EncryptedToken()
+                {
+                    Token = System.Convert.ToBase64String(encrypted),
+                    MachineKeyPurpose = id.ID,
+                    Provider = token.Provider
+                };
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "EncryptToken()"); }
         }
 
         public static EncryptedToken GetNewEncryptedToken(string token, OAuthID id)
         {
-            return new EncryptedToken() { Token = token, MachineKeyPurpose = id.ID, Provider = id.Provider };
+            LogHelper.Begin(log, "GetNewEncryptedToken()");
+            try
+            {
+                return new EncryptedToken() { Token = token, MachineKeyPurpose = id.ID, Provider = id.Provider };
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetNewEncryptedToken()"); }
         }
 
         public static UnEncryptedToken UnEncryptToken(EncryptedToken token)
         {
-            byte[] t = MachineKey.Unprotect(System.Convert.FromBase64String(token.Token), token.MachineKeyPurpose);
-            return new UnEncryptedToken()
+            LogHelper.Begin(log, "UnEncryptToken()");
+            try
             {
-                Token = Encoding.UTF8.GetString(t),
-                Provider = token.Provider
-            };
+                byte[] t = MachineKey.Unprotect(System.Convert.FromBase64String(token.Token), token.MachineKeyPurpose);
+                return new UnEncryptedToken()
+                {
+                    Token = Encoding.UTF8.GetString(t),
+                    Provider = token.Provider
+                };
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "UnEncryptToken()"); }
         }
 
         private static Random _random = new Random((int)DateTime.Now.Ticks);

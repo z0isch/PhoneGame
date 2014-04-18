@@ -17,12 +17,12 @@ namespace PhoneGameWebApi
         };
 
         public PhoneGameAPIException(string message)
-            : base(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = message })
+            : base(new HttpResponseMessage(HttpStatusCode.InternalServerError) { ReasonPhrase = message })
         {
         }
 
         public PhoneGameAPIException(Game game, string message)
-            : base(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = string.Format("Game {0}: {1}", (game ?? _emptyGame).ID, message) })
+            : base(new HttpResponseMessage(HttpStatusCode.InternalServerError) { ReasonPhrase = string.Format("Game {0}: {1}", (game ?? _emptyGame).ID, message) })
         {
         }
 

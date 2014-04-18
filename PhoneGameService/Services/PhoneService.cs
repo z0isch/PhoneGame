@@ -8,6 +8,7 @@ using PhoneGameService.Models;
 using PhoneGameService.Repositories;
 using Plivo.API;
 using RestSharp;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Services
 {
@@ -15,44 +16,49 @@ namespace PhoneGameService.Services
     {
         private static readonly string auth_id = "MAYZI0ZDG2ZWFJZDVIYZ";  // obtained from Plivo account dashboard
         private static readonly string auth_token = "MDVhOWZiMWMzNDUwZGI3YzE1ZDNkNGIyNmQ5MmVl";  // obtained from Plivo account dashboard
-        private static ILog _log = LogManager.GetLogger("PhoneService");
+        private static ILog log = LogManager.GetLogger("PhoneService");
 
         public static void MakeCall(int callId, Game game, TelephoneGameRepository repository)
         {
-
-            // Creating the Plivo Client
-            RestAPI plivo = new RestAPI(auth_id, auth_token);
-
-            // Making a Call
-            string from_number = "15022778448";
-            string to_number = "15022967010";
-
-
-            IRestResponse<Call> response = plivo.make_call(new Dictionary<string, string>() {
-                { "from", from_number },
-                { "to", to_number }, 
-                { "answer_url", string.Format("{0}/{1}/{2}/speak", Server.AnswerURLBase, game.ID, callId) }, 
-                { "answer_method", "GET" },
-                { "time_limit", "60" },
-                { "caller_name", "PhoneGame" },
-                { "callback_url", string.Format("{0}/{1}/{2}/callback", Server.AnswerURLBase, game.ID, callId) }
-            });
-
-            // The "Outbound call" API response has four properties -
-            // message, request_uuid, error, and api_id.
-            // error - contains the error response sent back from the server.
-            if (response.Data != null)
+            LogHelper.Begin(log, "MakeCall()");
+            try
             {
-                if (!string.IsNullOrEmpty(response.Data.error))
+                // Creating the Plivo Client
+                RestAPI plivo = new RestAPI(auth_id, auth_token);
+
+                // Making a Call
+                string from_number = "15022778448";
+                string to_number = "15022967010";
+
+
+                IRestResponse<Call> response = plivo.make_call(new Dictionary<string, string>() {
+                    { "from", from_number },
+                    { "to", to_number }, 
+                    { "answer_url", string.Format("{0}/{1}/{2}/speak", Server.AnswerURLBase, game.ID, callId) }, 
+                    { "answer_method", "GET" },
+                    { "time_limit", "60" },
+                    { "caller_name", "PhoneGame" },
+                    { "callback_url", string.Format("{0}/{1}/{2}/callback", Server.AnswerURLBase, game.ID, callId) }
+                });
+
+                // The "Outbound call" API response has four properties -
+                // message, request_uuid, error, and api_id.
+                // error - contains the error response sent back from the server.
+                if (response.Data != null)
                 {
-                    _log.ErrorFormat("Error response from server: {0}", response.Data.error);
+                    if (!string.IsNullOrEmpty(response.Data.error))
+                    {
+                        log.ErrorFormat("Error response from server: {0}", response.Data.error);
+                    }
+                }
+                else
+                {
+                    // ErrorMessage - contains error related to network failure.
+                    log.ErrorFormat(response.ErrorMessage);
                 }
             }
-            else
-            {
-                // ErrorMessage - contains error related to network failure.
-                _log.ErrorFormat(response.ErrorMessage);
-            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "MakeCall()"); }
         }
     }
 }

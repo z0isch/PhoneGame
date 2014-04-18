@@ -27,91 +27,77 @@ namespace PhoneGameWebApi.Controllers
                 using (var repository = new TelephoneGameRepository())
                 {
                     Game game = GameService.GetGame(gameId, repository);
-                    if (null == game)
-                    {
-                        throw new PhoneGameAPIException("No such game");
-                    }
                     return game;
                 }
             }
-            catch (PhoneGameAPIException) { throw; }
-            catch (Exception ex)
-            {
-                ExceptionHandler.LogAll(log, ex); 
-                throw new PhoneGameAPIException(HttpStatusCode.InternalServerError, ex.Message); 
-            }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [Route("api/gameplay/{gameId}/edges")]
         [HttpGet]
         public IList<EdgeConditional> GetCurrentGameEdges(int gameId)
         {
-            // TODO authorize the player is in this game
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                Game game = GameService.GetGame(gameId, repository);
-                if (null == game)
+                // TODO authorize the player is in this game
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                    Game game = GameService.GetGame(gameId, repository);
+                    return game.Edges;
                 }
-                return game.Edges;
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [Route("api/gameplay/{gameId}/next")]
         [HttpPost]
         public IList<EdgeConditional> TransitionGameState(int gameId, [FromUri] int edgeId)
         {
-            // TODO authorize the player is in this game
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                Game game = GameService.GetGame(gameId, repository);
-                if (null == game)
+                // TODO authorize the player is in this game
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                    Game game = GameService.GetGame(gameId, repository);
+
+                    EdgeConditional edge = game.Edges.FirstOrDefault(e => e.id == edgeId);
+                    if (null == edge)
+                    {
+                        throw new PhoneGameAPIException(HttpStatusCode.NotFound, game, string.Format("No such transition available (Bad edge id {0})", edgeId));
+                    }
+                    TransitionResult result = GameService.TransitionGameState(game, edge, repository);
+                    if (!result.Success)
+                    {
+                        throw new PhoneGameAPIException(HttpStatusCode.MethodNotAllowed, game, result.Message);
+                    }
+
+                    return game.Edges;
                 }
-                EdgeConditional edge = game.Edges.FirstOrDefault( e => e.id == edgeId);
-                if (null == edge)
-                {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-                TransitionResult result = GameService.TransitionGameState(game, edge, repository);
-                if (!result.Success)
-                {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = result.Message });
-                }
-                
-                return game.Edges;
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (PhoneGameAPIException) { throw; }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [Route("api/gameplay/{gameId}/addplayer/")]
         [HttpPost]
         public void AddPlayerToGame(int gameId, [FromUri] string playerId)
         {
-            // TODO authorize the player is in this game
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                Game game = GameService.GetGame(gameId, repository);
-                if (null == game)
+                // TODO authorize the player is in this game
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-                Player addPlayer = GameService.GetPlayerByID(playerId, repository);
-                if (null == addPlayer)
-                {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-
-                try
-                {
+                    Game game = GameService.GetGame(gameId, repository);
+                    Player addPlayer = GameService.GetPlayerByID(playerId, repository);
                     GameService.AddPlayerToGame(addPlayer, game, repository);
                 }
-                catch (PhoneGameClientException ex)
-                {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = ex.Message });
-                }
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (PhoneGameAPIException) { throw; }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [Route("api/gameplay/{gameId}/pickphrase/")]
@@ -124,23 +110,13 @@ namespace PhoneGameWebApi.Controllers
                 using (var repository = new TelephoneGameRepository())
                 {
                     Game game = GameService.GetGame(gameId, repository);
-                    if (null == game)
-                    {
-                        throw new HttpResponseException(HttpStatusCode.NotFound);
-                    }
                     GamePhrase phrase = GameService.GetPhraseById(phraseId, repository);
-                    if (null == phrase)
-                    {
-                        throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Bad phrase id" });
-                    }
-
                     GameService.PickPhraseForGame(phrase, game, repository);
                 }
             }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = ex.Message });
-            }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (PhoneGameAPIException) { throw; }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
     }
