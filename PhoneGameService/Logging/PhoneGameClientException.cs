@@ -15,13 +15,23 @@ namespace PhoneGameService.Logging
             _currentNodeNumber = -1
         };
 
+        public PhoneGameClientException(string message)
+            : base(message)
+        {
+        }
+
+        public PhoneGameClientException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
         public PhoneGameClientException(Game game, string message, Exception innerException)
-            : base(string.Format("Game {0} Current Node {1}: {2}", (game ?? _emptyGame).ID, (game ?? _emptyGame).currentNodeNumber, message), innerException)
+            : base(string.Format("{2} :Game {0} Current Node {1}", (game ?? _emptyGame).ID, (game ?? _emptyGame).currentNodeNumber, message), innerException)
         {
         }
 
         public PhoneGameClientException(Game game, string message)
-            : base(string.Format("Game {0} Current Node {1}: {2}", (game ?? _emptyGame).ID, (game ?? _emptyGame).currentNodeNumber, message))
+            : base(string.Format("{2} :Game {0} Current Node {1}", (game ?? _emptyGame).ID, (game ?? _emptyGame).currentNodeNumber, message))
         {
         }
     }

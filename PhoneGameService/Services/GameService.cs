@@ -19,7 +19,13 @@ namespace PhoneGameService.Services
 
         public static IList<Player> GetRecentPlayers(TelephoneGameRepository repository)
         {
-            return repository.GetPlayers();
+            LogHelper.Begin(log, "GetRecentPlayers()");
+            try
+            {
+                return repository.GetPlayers();
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetRecentPlayers()"); }
         }
 
         public static Game GetGame(int gameId, TelephoneGameRepository repository)
@@ -35,7 +41,13 @@ namespace PhoneGameService.Services
 
         public static IList<Game> GetGames(Player player, TelephoneGameRepository repository)
         {
-            return repository.GetGames(player);
+            LogHelper.Begin(log, "GetGames()");
+            try
+            {
+                return repository.GetGames(player);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetGames()"); }
         }
 
         public static void RequestNewPlayer(PlayerCreationRequest request, TelephoneGameRepository repository)
@@ -50,71 +62,145 @@ namespace PhoneGameService.Services
 
         public static IList<GameType> GetGameTypes(TelephoneGameRepository repository)
         {
-            return repository.GetAllGameTypes();
+            LogHelper.Begin(log, "GetAllGameTypes()");
+            try
+            {
+                return repository.GetAllGameTypes();
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetAllGameTypes()"); }
         }
+
         public static Game CreateNewGame<T>(TelephoneGameRepository repository) where T : GameType
         {
-            Game newGame = repository.CreateGame<T>();
-            newGame._currentNodeNumber = newGame._gameType.startNode.id;
-            return newGame;
+            LogHelper.Begin(log, string.Format("CreateNewGame<{0}>()", typeof(T).Name));
+            try
+            {
+                Game newGame = repository.CreateGame<T>();
+                newGame._currentNodeNumber = newGame._gameType.startNode.id;
+                return newGame;
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "CreateNewGame()"); }
         }
+
         public static Game CreateNewGame<T>(Player player1, TelephoneGameRepository repository) where T : GameType
         {
-            Game newGame = repository.CreateGame<T>();
-            newGame.AddPlayer(player1, repository);
-            newGame._currentNodeNumber = newGame._gameType.startNode.id;
-            return newGame;
+            LogHelper.Begin(log, string.Format("CreateNewGame<{0}>(Player)", typeof(T).Name));
+            try
+            {
+                Game newGame = repository.CreateGame<T>();
+                newGame.AddPlayer(player1, repository);
+                newGame._currentNodeNumber = newGame._gameType.startNode.id;
+                return newGame;
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "CreateNewGame(Player)"); }
         }
 
         public static Player FindPlayer(PhoneNumber phoneNumber, TelephoneGameRepository repository)
         {
-            return repository.GetPlayerByPhoneNumber(phoneNumber);
+            LogHelper.Begin(log, "FindPlayer(PhoneNumber)");
+            try
+            {
+                return repository.GetPlayerByPhoneNumber(phoneNumber);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "FindPlayer(PhoneNumber)"); }
         }
 
         public static Player FindPlayer(string phoneNumber, TelephoneGameRepository repository)
         {
-            return repository.GetPlayerByPhoneNumber(phoneNumber);
+            LogHelper.Begin(log, "FindPlayer(string)");
+            try
+            {
+                return repository.GetPlayerByPhoneNumber(phoneNumber);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "FindPlayer(string)"); }
         }
 
         public static Player GetPlayerByID(string id, TelephoneGameRepository repository)
         {
-            return repository.GetPlayerByID(id);
+            LogHelper.Begin(log, "GetPlayerByID()");
+            try
+            {
+                return repository.GetPlayerByID(id);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetPlayerByID()"); }
         }
 
         public static void AddPlayerToGame(Player player, Game game, TelephoneGameRepository repository)
         {
-            game.AddPlayer(player, repository);
+            LogHelper.Begin(log, "AddPlayerToGame()");
+            try
+            {
+                game.AddPlayer(player, repository);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "AddPlayerToGame()"); }
         }
 
         public static void PickPhraseForGame(GamePhrase phrase, Game game, TelephoneGameRepository repository)
         {
-            game.PickPhrase(phrase, repository);
+            LogHelper.Begin(log, "PickPhraseForGame()");
+            try
+            {
+                game.PickPhrase(phrase, repository);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "PickPhraseForGame()"); }
         }
 
         public static IList<GamePhrase> GetPhraseList(TelephoneGameRepository repository)
         {
-            return repository.GetAllGamePhrases();
+            LogHelper.Begin(log, "GetPhraseList()");
+            try
+            {
+                return repository.GetAllGamePhrases();
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetPhraseList()"); }
         }
 
         public static bool IsPlayersTurn(Player player, Game game, TelephoneGameRepository repository)
         {
-            if (!game.players.Values.Contains<Player>(player))
+            LogHelper.Begin(log, "IsPlayersTurn()");
+            try
             {
-                throw new PhoneGameClientException(game, string.Format("Player {0} is not in game {1}", player.Name, game.ID));
-            }
+                if (!game.players.Values.Contains<Player>(player))
+                {
+                    throw new PhoneGameClientException(game, string.Format("Player {0} is not in game {1}", player.Name, game.ID));
+                }
 
-            KeyValuePair<int, Player> kvPair = game.players.FirstOrDefault<KeyValuePair<int, Player>>(p => p.Value.ID == player.ID);
-            return kvPair.Key == game.gameType.GetNode(game.currentNodeNumber).activePlayerNumber;
+                KeyValuePair<int, Player> kvPair = game.players.FirstOrDefault<KeyValuePair<int, Player>>(p => p.Value.ID == player.ID);
+                return kvPair.Key == game.gameType.GetNode(game.currentNodeNumber).activePlayerNumber;
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "IsPlayersTurn()"); }
         }
 
         public static TransitionResult TransitionGameState(Game game, EdgeConditional edge, TelephoneGameRepository repository)
         {
-            return edge.Transition(game, repository);
+            LogHelper.Begin(log, "TransitionGameState()");
+            try
+            {
+                return edge.Transition(game, repository);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "TransitionGameState()"); }
         }
 
         public static void RefreshGameState(Game game, TelephoneGameRepository repository)
         {
-            game = repository.GetGame(game.ID);
+            LogHelper.Begin(log, "RefreshGameState()");
+            try
+            {
+                game = repository.GetGame(game.ID);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "RefreshGameState()"); }
         }
 
         public static GameAudio GetGameAudio(AudioIdentifier audioID, TelephoneGameRepository repository)
@@ -139,41 +225,52 @@ namespace PhoneGameService.Services
 
         public static void RenderGameTypeDotGraph<T>(string filename) where T : GameType
         {
-            GameType gameType = GameTypeFactory.GetGameType<T>();
-            var output = new StringBuilder();
-            output.AppendFormat("digraph {0}", gameType.GetType().Name);
-            output.AppendLine("{");
-            output.AppendLine("graph [overlap=\"false\",mode=\"hier\",splines=\"true\",root=\"INQUIRED\",levelsgap=.2]");
-            output.AppendLine("edge [fontsize=6,labelfloat=\"false\",labelangle=35,labeldistance=1.75]");
-            output.AppendLine("node [fontsize=8]");
-            foreach (GameStateNode n in gameType.nodes.Values)
+            LogHelper.Begin(log, "RenderGameTypeDotGraph()");
+            try
             {
-                foreach(EdgeConditional edge in n.edgeConditionals)
+                GameType gameType = GameTypeFactory.GetGameType<T>();
+                var output = new StringBuilder();
+                output.AppendFormat("digraph {0}", gameType.GetType().Name);
+                output.AppendLine("{");
+                output.AppendLine("graph [overlap=\"false\",mode=\"hier\",splines=\"true\",root=\"INQUIRED\",levelsgap=.2]");
+                output.AppendLine("edge [fontsize=6,labelfloat=\"false\",labelangle=35,labeldistance=1.75]");
+                output.AppendLine("node [fontsize=8]");
+                foreach (GameStateNode n in gameType.nodes.Values)
                 {
-                    output.AppendFormat("{0}->{1}[headlabel=\"{2}\"]\n", n.uniqueName, edge.nextNode.uniqueName, edge.text);
+                    foreach(EdgeConditional edge in n.edgeConditionals)
+                    {
+                        output.AppendFormat("{0}->{1}[headlabel=\"{2}\"]\n", n.uniqueName, edge.nextNode.uniqueName, edge.text);
+                    }
+                }
+
+                foreach (GameStateNode n in gameType.nodes.Values)
+                {
+                    output.AppendFormat("{0};\n", n.uniqueName);
+                }
+
+                output.Append("}");
+
+                var file = new FileInfo(filename);
+                using (FileStream fs = file.OpenWrite())
+                {
+                    StreamWriter sw = new StreamWriter(fs);
+                    sw.Write(output.ToString());
+                    sw.Close();
                 }
             }
-
-            foreach (GameStateNode n in gameType.nodes.Values)
-            {
-                output.AppendFormat("{0};\n", n.uniqueName);
-            }
-
-            output.Append("}");
-
-            var file = new FileInfo(filename);
-            using (FileStream fs = file.OpenWrite())
-            {
-                StreamWriter sw = new StreamWriter(fs);
-                sw.Write(output.ToString());
-                sw.Close();
-            }
-
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "RenderGameTypeDotGraph()"); }
         }
 
         public static GamePhrase GetPhraseById(int phraseId, TelephoneGameRepository repository)
         {
-            return repository.GetPhraseByID(phraseId);
+            LogHelper.Begin(log, "GetPhraseById()");
+            try
+            {
+                return repository.GetPhraseByID(phraseId);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetPhraseById()"); }
         }
     }
 }

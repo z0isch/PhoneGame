@@ -8,6 +8,7 @@ using PhoneGameService.Models.GameTypes;
 using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Models.OAuthTokens;
 using PhoneGameService.Services;
+using PhoneGameService.Logging;
 
 namespace PhoneGameService.Repositories
 {
@@ -110,7 +111,9 @@ namespace PhoneGameService.Repositories
 
         internal Player GetPlayerByID(string ID)
         {
-            return _players.FirstOrDefault<Player>(p => p.ID == ID);
+            Player retp = _players.FirstOrDefault<Player>(p => p.ID == ID);
+            if (null == retp) throw new PhoneGameClientException(string.Format("No such player with id {0}", ID));
+            return retp;
         }
 
         internal Player GetPlayerByPhoneNumber(PhoneNumber number)
@@ -147,17 +150,12 @@ namespace PhoneGameService.Repositories
             return newGame;
         }
 
-        /// <summary>
-        /// Get a Game object.  Returns null if the Game cannot be found.
-        /// </summary>
-        /// <param name="id">The ID of the Game</param>
-        /// <returns>A valid Game object with the given id, or null</returns>
         internal Game GetGame(int id)
         {
-            if (_games.ContainsKey(id))
-                return _games[id];
-            else
-                return null;
+            if (!_games.ContainsKey(id))
+                throw new PhoneGameClientException(string.Format("Game with id {0} not found", id));
+
+            return _games[id];
         }
 
         internal IList<Game> GetGames(Player player)
@@ -167,7 +165,9 @@ namespace PhoneGameService.Repositories
 
         internal GamePhrase GetPhraseByID(int phraseId)
         {
-            return _gamePhrases.FirstOrDefault(p => p.id == phraseId);
+            GamePhrase phrase = _gamePhrases.FirstOrDefault(p => p.id == phraseId);
+            if (null == phrase) throw new PhoneGameClientException(string.Format("No such phrase with id {0}", phraseId));
+            return phrase;
         }
     }
 }
