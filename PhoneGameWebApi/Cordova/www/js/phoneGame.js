@@ -1,4 +1,5 @@
 ﻿(function () {
+  'use strict';
   angular.module('phonegame', ['oauth', 'phonegame.url'])
   .service('phraseService', ['$http', '$q', 'authenticationService', 'baseUrl',
     function ($http, $q, authenticationService, baseUrl) {
