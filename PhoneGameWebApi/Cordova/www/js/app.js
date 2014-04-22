@@ -81,7 +81,16 @@
               var gamePromise = gameService.getGames(credentials.phone_game_id).then(function (data) {
                 if (data.length > 0) {
                   $scope.inGames = true;
-                  $scope.games = data;
+                  $scope.yourTurnGames = data.filter(function (g) {
+                    return g.YourTurn;
+                  }).map(function (g) {
+                    return g.Game;
+                  });
+                  $scope.notYourTurnGames = data.filter(function (g) {
+                    return !g.YourTurn;
+                  }).map(function (g) {
+                    return g.Game;
+                  });
                 }
                 else {
                   $scope.inGames = false;

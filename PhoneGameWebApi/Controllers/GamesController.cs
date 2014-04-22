@@ -17,16 +17,22 @@ namespace PhoneGameWebApi.Controllers
     {
         private static ILog log = LogManager.GetLogger("GamePlayController");
 
+        /// <summary>
+        /// Get a list of games and wether or not it is your turn
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns>[{YourTurn: bool, Game = Game},...]</returns>
         [Route("api/players/{playerId}/games")]
         [HttpGet]
-        public IEnumerable<Game> GetAllGamesForPlayer(string playerId)
+        public IEnumerable<object> GetAllGamesForPlayer(string playerId)
         {
             try
             {
                 using (var repository = new TelephoneGameRepository())
                 {
                     var player = GameService.GetPlayerByID(playerId, repository);
-                    return GameService.GetGames(player, repository);
+                    var games = GameService.GetGames(player, repository);
+                    return games.Select(g => new { YourTurn = GameService.IsPlayersTurn(player, g, repository), Game = g });
                 }
             }
             catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
