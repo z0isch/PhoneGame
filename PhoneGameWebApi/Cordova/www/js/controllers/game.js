@@ -1,7 +1,6 @@
 ﻿(function () {
   'use strict';
-  angular.module('app')
-  .controller('GameCtrl', ['$scope', '$ionicPlatform', '$http',
+  angular.module('app').controller('GameCtrl', ['$scope', '$ionicPlatform', '$http',
       '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
       function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, gameService) {
         var loadingScreen = $ionicLoading.show({
