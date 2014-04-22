@@ -1,4 +1,6 @@
-﻿using PhoneGameService.Models;
+﻿using log4net;
+using PhoneGameService.Logging;
+using PhoneGameService.Models;
 using PhoneGameService.Repositories;
 using PhoneGameService.Services;
 using System;
@@ -12,6 +14,8 @@ namespace PhoneGameWebApi.Controllers
 {
     public class PhrasesController : ApiController
     {
+        private static ILog log = LogManager.GetLogger("PhrasesController");
+
         public IList<GamePhrase> Get()
         {
             using (var repository = new TelephoneGameRepository())
@@ -23,20 +27,19 @@ namespace PhoneGameWebApi.Controllers
         [Route("api/games/{gameId}/phrases/{phraseId}")]
         public Game PickPhrase(int gameId,int phraseId)
         {
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                var game = GameService.GetGame(gameId,repository);
-                var phrase = GameService.GetPhraseById(phraseId,repository);
-                if (game == null || phrase == null)
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                else
+                using (var repository = new TelephoneGameRepository())
                 {
+                    var game = GameService.GetGame(gameId, repository);
+                    var phrase = GameService.GetPhraseById(phraseId, repository);
                     GameService.PickPhraseForGame(phrase, game, repository);
                     GameService.TransitionGameState(game, game.Edges[0], repository);
                     return game;
                 }
-                
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, "Game or phrase doesn't exist"); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
     }
 }

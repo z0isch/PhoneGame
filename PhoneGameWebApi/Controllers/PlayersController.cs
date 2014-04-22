@@ -8,11 +8,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using PhoneGameService.Logging;
+using log4net;
 
 namespace PhoneGameWebApi.Controllers
 {
     public class PlayersController : ApiController
     {
+        private static ILog log = LogManager.GetLogger("GamePlayController");
+
         public IEnumerable<Player> Get()
         {
             using (var repository = new TelephoneGameRepository())
@@ -22,15 +25,16 @@ namespace PhoneGameWebApi.Controllers
         }
         public Player Get(string id)
         {
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                var player = GameService.GetPlayerByID(id, repository);
-                if (player == null)
+                using (var repository = new TelephoneGameRepository())
                 {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                    return GameService.GetPlayerByID(id, repository);
                 }
-                return player;
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
+           
         }
 
         //Responds to api/playersFromPhoneNumbers?phoneNumbers[0]=123&phoneNumbers[1]=345...
@@ -38,20 +42,26 @@ namespace PhoneGameWebApi.Controllers
         [Route("api/playersFromPhoneNumbers")]
         public Dictionary<string, string> PlayersFromPhoneNumbers([FromUri] List<string> phoneNumbers)
         {
-            var players = new Dictionary<string, string>();
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                foreach (var num in phoneNumbers)
+                var players = new Dictionary<string, string>();
+                using (var repository = new TelephoneGameRepository())
                 {
-                    var number = num.Replace("+", "").Replace("-", "").Replace("(","").Replace(")","").Replace(" ","");
-                    var p = GameService.FindPlayer(number, repository);
-                    if (p != null)
+                    foreach (var num in phoneNumbers)
                     {
-                        players.Add(num, p.ID);
+                        var number = num.Replace("+", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace(" ", "");
+                        var p = GameService.FindPlayer(number, repository);
+                        if (p != null)
+                        {
+                            players.Add(num, p.ID);
+                        }
                     }
                 }
+                return players;
             }
-            return players;
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
+            
         }
     }
 }
