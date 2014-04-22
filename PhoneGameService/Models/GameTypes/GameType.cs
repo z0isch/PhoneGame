@@ -20,8 +20,10 @@ namespace PhoneGameService.Models
         internal Dictionary<int, GameStateNode> nodes = new Dictionary<int, GameStateNode>();
 
         public GameStateNode startNode { get; set; }
-        public abstract GameStateNode GetNode(int id);
-
+        internal virtual GameStateNode GetNode(int id)
+        {
+            return nodes[id];
+        }
 
         protected int _nodeId = 1;
         protected int _edgeId = 1;

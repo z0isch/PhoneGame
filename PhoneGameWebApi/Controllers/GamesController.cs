@@ -8,79 +8,82 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using PhoneGameService.Logging;
+using log4net;
 
 namespace PhoneGameWebApi.Controllers
 {
     public class GamesController : ApiController
     {
+        private static ILog log = LogManager.GetLogger("GamePlayController");
+
         [Route("api/players/{playerId}/games")]
         [HttpGet]
         public IEnumerable<Game> GetAllGamesForPlayer(string playerId)
         {
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                var player = GameService.GetPlayerByID(playerId, repository);
-                if (player != null)
+                using (var repository = new TelephoneGameRepository())
                 {
+                    var player = GameService.GetPlayerByID(playerId, repository);
                     return GameService.GetGames(player, repository);
                 }
-                else
-                {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [HttpGet]
         [Route("api/games/{gameId}")]
         public Game GetGameById(int gameId)
         {
-            //TODO authorize that the player has access to the given game
-
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                var game = GameService.GetGame(gameId, repository);
-                if (game != null)
+                //TODO authorize that the player has access to the given game
+                using (var repository = new TelephoneGameRepository())
                 {
+                    var game = GameService.GetGame(gameId, repository);
                     return game;
                 }
-                else
-                {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
 
         [HttpPost]
         [Route("api/games/")]
         public Game AddNewGame([FromBody]JObject obj)
         {
-            using (var repository = new TelephoneGameRepository())
+            try
             {
-                List<Player> players = obj["playerIds"].Select( id=> GameService.GetPlayerByID(id.ToString(), repository)).ToList();
+                using (var repository = new TelephoneGameRepository())
+                {
+                    List<Player> players = obj["playerIds"].Select(id => GameService.GetPlayerByID(id.ToString(), repository)).ToList();
 
-                if (players.Any(p => p==null))
-                {
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                }
-                else
-                {
-                    if (players.Count == 2)
+                    if (players.Any(p => p == null))
                     {
-                        var game = GameService.CreateNewGame<TwoPlayersOriginal>(players[0],repository);
-                        GameService.TransitionGameState(game, game.Edges[0], repository);
-                        GameService.AddPlayerToGame(players[1], game, repository);
-                        GameService.TransitionGameState(game, game.Edges[0], repository);
-                        return game;
+                        throw new PhoneGameAPIException(HttpStatusCode.NotFound, "No players selected");
                     }
                     else
                     {
-                        throw new HttpResponseException(HttpStatusCode.NotImplemented);
+                        var game = GameService.CreateNewGame<TwoPlayersOriginal>(players[0], repository);
+                        if(game.CanIPlayWithThisMany(players.Count))
+                        {
+                            GameService.TransitionGameState(game, game.Edges[0], repository);
+                            GameService.AddPlayerToGame(players[1], game, repository);
+                            GameService.TransitionGameState(game, game.Edges[0], repository);
+                            return game;
+                        }
+                        else
+                        {
+                            throw new PhoneGameAPIException(HttpStatusCode.NotImplemented, "Wrong number of players");
+                        }
                     }
-                }
 
+                }
             }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
     }
 }

@@ -43,6 +43,8 @@ namespace PhoneGameService.Models
         public int maxNumberOfPlayers { get { return _gameType.maxNumberOfPlayers; } }
         public int minNumberOfPlayers { get { return _gameType.minNumberOfPlayers; } }
 
+        public bool CanIPlayWithThisMany(int numPlayers) { return numPlayers >= minNumberOfPlayers && numPlayers <= maxNumberOfPlayers; }
+
         internal bool PlayerInGame(Player player, TelephoneGameRepository repository)
         {
             return _players.ContainsValue(player);

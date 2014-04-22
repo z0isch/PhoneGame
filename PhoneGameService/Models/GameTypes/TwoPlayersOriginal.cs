@@ -75,40 +75,5 @@ namespace PhoneGameService.Models
 
             return this;
         }
-
-        public override GameStateNode GetNode(int id)
-        {
-            return nodes[id];
-        }
-
-        internal GameStateNode GetNextGameState(Game game, int currentNodeId, int edgeId)
-        {
-            try
-            {
-                GameStateNode node = nodes[currentNodeId];
-                EdgeConditional edge = node.edgeConditionals.First<EdgeConditional>(e => e.id == edgeId);
-                return edge.nextNode;
-            }
-            catch (Exception ex)
-            {
-                throw new PhoneGameClientException(game, string.Format("Could not get next GameStateNode.  Node id: {0} edge id: {1}", currentNodeId, edgeId), ex);
-            }
-        }
-
-        internal bool TryGetNextGameState(Game game, int currentNodeId, int edgeId, out GameStateNode nextNode)
-        {
-            try
-            {
-                GameStateNode node = nodes[currentNodeId];
-                EdgeConditional edge = node.edgeConditionals.First<EdgeConditional>(e => e.id == edgeId);
-                nextNode = edge.nextNode;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                nextNode = null;
-                return false;
-            }
-        }
     }
 }

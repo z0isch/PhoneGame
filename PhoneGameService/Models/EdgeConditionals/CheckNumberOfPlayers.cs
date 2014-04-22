@@ -9,13 +9,14 @@ namespace PhoneGameService.Models.EdgeConditionals
     {
         public override TransitionResult Transition(Game game, Repositories.TelephoneGameRepository repository)
         {
-            if (game.numberOfPlayers >= game.gameType.minNumberOfPlayers)
-            {
-                ChangeState(game, repository);
-                return new TransitionResult();
-            }
+            if (!game.enoughPlayers)
+                return new TransitionResult() { Success = false, Message = "Not enough players to begin game" };
 
-            return new TransitionResult() { Success = false, Message = "Not enough players to begin game" };
+            if(game.numberOfPlayers > game.maxNumberOfPlayers)
+                return new TransitionResult() { Success = false, Message = "Too many players to begin game" };
+
+            ChangeState(game, repository);
+            return new TransitionResult();
         }
     }
 }
