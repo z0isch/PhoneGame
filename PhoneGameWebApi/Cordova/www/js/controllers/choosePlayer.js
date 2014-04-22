@@ -1,8 +1,8 @@
 ﻿(function () {
   'use strict';
   angular.module('app').controller('ChoosePlayerCtrl', ['$scope', '$ionicPlatform', '$http',
-    '$state', '$ionicLoading', '$ionicNavBarDelegate', 'contacts', 'playersService', 'gameService',
-    function ($scope, $ionicPlatform, $http, $state, $ionicLoading, $ionicNavBarDelegate, contacts, playersService, gameService) {
+    '$state', '$ionicLoading', '$ionicNavBarDelegate', 'contacts', 'playerService', 'gameService',
+    function ($scope, $ionicPlatform, $http, $state, $ionicLoading, $ionicNavBarDelegate, contacts, playerService, gameService) {
 
       $scope.playerPicked = function (player) {
         if (player.registered) {
@@ -31,7 +31,7 @@
 
         var promise = contacts.find();
         promise.then(function (contacts) {
-          var getPlayers = playersService.getPlayersFromCordovaContacts(contacts);
+          var getPlayers = playerService.getPlayersFromCordovaContacts(contacts);
           getPlayers.then(function (players) {
             $scope.registeredContacts = players.filter(function (p) {
               return p.registered;

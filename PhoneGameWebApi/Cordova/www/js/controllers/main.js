@@ -1,8 +1,8 @@
 ﻿(function () {
   'use strict';
   angular.module('app').controller('MainCtrl', ['$scope', '$ionicPlatform', '$http', '$state', 'authenticationService',
-    'playersService', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
-    function ($scope, $ionicPlatform, $http, $state, authenticationService, playersService,
+    'playerService', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
+    function ($scope, $ionicPlatform, $http, $state, authenticationService, playerService,
       $ionicLoading, $ionicNavBarDelegate, gameService) {
       $scope.loggedIn = false;
       $scope.inGames = false;
@@ -21,7 +21,7 @@
             content: 'Getting account info...',
           });
 
-          var promise = playersService.getPlayer(credentials.phone_game_id);
+          var promise = playerService.getPlayer(credentials.phone_game_id);
           promise.then(function (player) {
             $scope.name = player.Name;
             var gamePromise = gameService.getGames(credentials.phone_game_id).then(function (data) {

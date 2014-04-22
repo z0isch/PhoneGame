@@ -1,6 +1,6 @@
 ﻿(function () {
   'use strict';
-  angular.module('phonegame').service('playersService', ['$http', '$q', 'authenticationService', 'baseUrl',
+  angular.module('phonegame').service('playerService', ['$http', '$q', 'authenticationService', 'baseUrl',
     function ($http, $q, authenticationService, baseUrl) {
 
       this.getPlayersFromCordovaContacts = function (contacts) {
