@@ -91,5 +91,21 @@ namespace PhoneGameWebApi.Controllers
             catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
             catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
         }
+
+        [HttpDelete]
+        [Route("api/games/{gameId}")]
+        public void Delete(int gameId)
+        {
+            try
+            {
+                using (var repository = new TelephoneGameRepository())
+                {
+                    var game = GameService.GetGame(gameId, repository);
+                    GameService.DeleteGame(game,repository);
+                }
+            }
+            catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw new PhoneGameAPIException(ex.Message); }
+        }
     }
 }

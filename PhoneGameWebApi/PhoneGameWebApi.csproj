@@ -142,8 +142,21 @@
     <Compile Include="Controllers\PhoneServiceController.cs" />
     <Compile Include="Controllers\PhrasesController.cs" />
     <Compile Include="Controllers\PlayersController.cs" />
-    <Content Include="Cordova\www\pickPhrase.html" />
-    <Content Include="Cordova\www\game.html" />
+    <Content Include="Cordova\www\js\controllers\choosePlayer.js" />
+    <Content Include="Cordova\www\js\controllers\game.js" />
+    <Content Include="Cordova\www\js\controllers\login.js" />
+    <Content Include="Cordova\www\js\controllers\main.js" />
+    <Content Include="Cordova\www\js\controllers\pickPhrase.js" />
+    <Content Include="Cordova\www\js\directives\back-button.html" />
+    <Content Include="Cordova\www\js\directives\backButton.js" />
+    <Content Include="Cordova\www\js\phonegame.js" />
+    <Content Include="Cordova\www\js\services\authorization.js" />
+    <Content Include="Cordova\www\js\services\backButton.js" />
+    <Content Include="Cordova\www\js\services\game.js" />
+    <Content Include="Cordova\www\js\services\phrase.js" />
+    <Content Include="Cordova\www\js\services\player.js" />
+    <Content Include="Cordova\www\templates\pickPhrase.html" />
+    <Content Include="Cordova\www\templates\game.html" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -155,7 +168,7 @@
     <Compile Include="UseXmlFormatterAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Cordova\www\choosePlayer.html" />
+    <Content Include="Cordova\www\templates\choosePlayer.html" />
     <Content Include="Cordova\www\.gitignore" />
     <Content Include="Cordova\www\config.xml" />
     <Content Include="Cordova\www\css\ionic.app.css" />
@@ -168,7 +181,6 @@
     <Content Include="Cordova\www\js\desktopMocks\oauth.js" />
     <Content Include="Cordova\www\js\desktopMocks\phonegame.url.js" />
     <Content Include="Cordova\www\js\oauth.js" />
-    <Content Include="Cordova\www\js\phonegame.js" />
     <Content Include="Cordova\www\js\phonegame.url.js" />
     <Content Include="Cordova\www\lib\ionic\css\ionic.css" />
     <Content Include="Cordova\www\lib\ionic\css\ionic.min.css" />
@@ -190,8 +202,8 @@
     <Content Include="Cordova\www\lib\ionic\js\ionic.js" />
     <Content Include="Cordova\www\lib\ionic\js\ionic.min.js" />
     <Content Include="Cordova\www\lib\q.js" />
-    <Content Include="Cordova\www\login.html" />
-    <Content Include="Cordova\www\main.html" />
+    <Content Include="Cordova\www\templates\login.html" />
+    <Content Include="Cordova\www\templates\main.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />

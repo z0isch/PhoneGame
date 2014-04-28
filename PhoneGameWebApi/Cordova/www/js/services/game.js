@@ -55,6 +55,23 @@
 
         return deferred.promise;
       }
+      this.deleteGame = function (gameId) {
+        var deferred = $q.defer();
+        var h = authenticationService.getOAuthHeaders();
+
+        $http.delete(baseUrl + '/api/games/' + gameId, { headers: h, responseType: 'json' })
+        .success(function (data, status, headers, config) {
+          deferred.resolve(data);
+        })
+        .error(function (data, status, headers, config) {
+          if (status == "401")
+            deferred.reject("User not logged in");
+          else
+            deferred.reject("Server error with: " + status);
+        });
+
+        return deferred.promise;
+      }
     }
   ])
 })();

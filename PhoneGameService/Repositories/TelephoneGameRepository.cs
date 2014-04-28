@@ -169,5 +169,10 @@ namespace PhoneGameService.Repositories
             if (null == phrase) throw new PhoneGameClientException(string.Format("No such phrase with id {0}", phraseId));
             return phrase;
         }
+        
+        internal void DeleteGame(Game game)
+        {
+            _games.Remove(_games.First(g => g.Value.ID == game.ID).Key);
+        }
     }
 }

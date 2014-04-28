@@ -272,5 +272,15 @@ namespace PhoneGameService.Services
             catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
             finally { LogHelper.End(log, "GetPhraseById()"); }
         }
+        public static void DeleteGame(Game game, TelephoneGameRepository repository)
+        {
+            LogHelper.Begin(log, "DeleteGame()");
+            try
+            {
+                repository.DeleteGame(game);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetPhraseById()"); }
+        }
     }
 }
