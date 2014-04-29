@@ -28,14 +28,10 @@
               if (data.length > 0) {
                 $scope.inGames = true;
                 $scope.yourTurnGames = data.filter(function (g) {
-                  return g.YourTurn;
-                }).map(function (g) {
-                  return g.Game;
+                  return g.ActivePlayer.ID === credentials.phone_game_id;
                 });
                 $scope.notYourTurnGames = data.filter(function (g) {
-                  return !g.YourTurn;
-                }).map(function (g) {
-                  return g.Game;
+                  return g.ActivePlayer.ID !== credentials.phone_game_id;
                 });
               }
               else {

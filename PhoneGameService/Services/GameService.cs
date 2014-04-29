@@ -38,7 +38,16 @@ namespace PhoneGameService.Services
             catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
             finally { LogHelper.End(log, "GetGame()"); }
         }
-
+        public static IList<Game> GetActiveGames(Player player, TelephoneGameRepository repository)
+        {
+            LogHelper.Begin(log, "GetActiveGames()");
+            try
+            {
+                return repository.GetActiveGames(player);
+            }
+            catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
+            finally { LogHelper.End(log, "GetActiveGames()"); }
+        }
         public static IList<Game> GetGames(Player player, TelephoneGameRepository repository)
         {
             LogHelper.Begin(log, "GetGames()");
@@ -280,7 +289,7 @@ namespace PhoneGameService.Services
                 repository.DeleteGame(game);
             }
             catch (Exception ex) { ExceptionHandler.LogAll(log, ex); throw; }
-            finally { LogHelper.End(log, "GetPhraseById()"); }
+            finally { LogHelper.End(log, "DeleteGame()"); }
         }
     }
 }

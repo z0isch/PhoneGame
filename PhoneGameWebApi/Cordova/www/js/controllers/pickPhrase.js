@@ -4,17 +4,7 @@
     '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'phraseService','gameService',
     function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, phraseService, gameService) {
       $scope.backButtonHandler = function () {
-        var loadingScreen = $ionicLoading.show({
-          content: '',
-        });
-        var promise =  gameService.deleteGame($stateParams.gameId).then(function (data) {
-          $state.go('main');
-        }, function (error) {
-          alert(error);
-        });
-        promise['finally'](function () {
-          loadingScreen.hide();
-        });
+        $state.go('main');
       };
 
       $scope.phrasePicked = function (phrase) {

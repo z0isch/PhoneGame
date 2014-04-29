@@ -18,21 +18,20 @@ namespace PhoneGameWebApi.Controllers
         private static ILog log = LogManager.GetLogger("GamePlayController");
 
         /// <summary>
-        /// Get a list of games and wether or not it is your turn
+        /// Get a list of games and whether or not it is your turn
         /// </summary>
         /// <param name="playerId"></param>
-        /// <returns>[{YourTurn: bool, Game = Game},...]</returns>
+        /// <returns>All games that are playable</returns>
         [Route("api/players/{playerId}/games")]
         [HttpGet]
-        public IEnumerable<object> GetAllGamesForPlayer(string playerId)
+        public IEnumerable<Game> GetActiveGamesForPlayer(string playerId)
         {
             try
             {
                 using (var repository = new TelephoneGameRepository())
                 {
                     var player = GameService.GetPlayerByID(playerId, repository);
-                    var games = GameService.GetGames(player, repository);
-                    return games.Select(g => new { YourTurn = GameService.IsPlayersTurn(player, g, repository), Game = g });
+                    return GameService.GetActiveGames(player, repository);
                 }
             }
             catch (PhoneGameClientException ex) { throw new PhoneGameAPIException(HttpStatusCode.NotFound, ex.Message); }

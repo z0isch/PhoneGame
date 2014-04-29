@@ -45,6 +45,10 @@ namespace PhoneGameService.Models
 
         public bool CanIPlayWithThisMany(int numPlayers) { return numPlayers >= minNumberOfPlayers && numPlayers <= maxNumberOfPlayers; }
 
+        public Player ActivePlayer
+        {
+            get { return this.players[this.currentNode.activePlayerNumber]; }
+        }
         internal bool PlayerInGame(Player player, TelephoneGameRepository repository)
         {
             return _players.ContainsValue(player);

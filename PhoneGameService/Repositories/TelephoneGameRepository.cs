@@ -9,6 +9,7 @@ using PhoneGameService.Models.OAuthProviders;
 using PhoneGameService.Models.OAuthTokens;
 using PhoneGameService.Services;
 using PhoneGameService.Logging;
+using PhoneGameService.Models.GameStates;
 
 namespace PhoneGameService.Repositories
 {
@@ -49,6 +50,11 @@ namespace PhoneGameService.Repositories
             {new OAuthID(){ ID = "113626801228454940516", Provider= new Google()},_players[1] },
             {new OAuthID(){ ID = "1", Provider= new TestProvider()},_players[3] },
             {new OAuthID(){ ID = "2", Provider= new TestProvider()},_players[4] }
+        };
+
+        private static Dictionary<Type, List<Type>> StatesToIgnore = new Dictionary<Type, List<Type>>()
+        {
+            {typeof(TwoPlayersOriginal),new List<Type>(){ typeof(NotStarted), typeof(PickPhrase), typeof(PickPlayer)}}
         };
 
         public TelephoneGameRepository()
@@ -162,7 +168,12 @@ namespace PhoneGameService.Repositories
         {
             return _games.Values.Where<Game>(g => g.players.Values.Contains(player)).ToList<Game>();
         }
-
+        internal IList<Game> GetActiveGames(Player player)
+        {
+            return _games.Values.Where<Game>(g => g.players.Values.Contains(player))
+                .Where(g => !StatesToIgnore[g.gameType.GetType()].Contains(g.currentNode.GetType()))
+                .ToList<Game>();
+        }
         internal GamePhrase GetPhraseByID(int phraseId)
         {
             GamePhrase phrase = _gamePhrases.FirstOrDefault(p => p.id == phraseId);
