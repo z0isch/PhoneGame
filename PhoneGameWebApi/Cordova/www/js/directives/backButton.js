@@ -1,14 +1,21 @@
 ﻿(function () {
   'use strict';
-  angular.module('phonegame').directive('backButton',['backButton',function (backButton) {
+  angular.module('phonegame').directive('backButton', ['backButton',function (backButton) {
     function link(scope, element, attrs) {
+
+      if (scope.handler)
+        backButton.setHandler(scope.handler);
+      else
+        backButton.useDefaultHandler();
+
       scope.backButtonPress = function () {
-        document.dispatchEvent(new Event('backbutton'));
+        backButton.triggerHandler();
       };
-      backButton.setHandler(function () {
-        if (scope.handler)
-          scope.handler();
+      
+      scope.$on('$destroy', function () {
+        backButton.useDefaultHandler();
       });
+
     }
     return {
       restrict: 'E',

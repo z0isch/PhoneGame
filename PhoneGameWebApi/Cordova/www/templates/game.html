@@ -1,7 +1,5 @@
 ﻿<ion-view title="PhoneGame">
-  <ion-nav-buttons side="left">
-      <a class="button icon ion-home button-clear" href="#/"></a>
-    </ion-nav-buttons>
+  <back-button handler="backButtonHandler"></back-button>
   <ion-content has-header="true" padding="true">
     <h1> Game with {{game.players[1].Name}}</h1>
     <h3>Phrase: {{game.gamePhrase.text}}</h3>

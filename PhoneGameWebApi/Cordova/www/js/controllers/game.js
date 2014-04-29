@@ -3,6 +3,10 @@
   angular.module('app').controller('GameCtrl', ['$scope', '$ionicPlatform', '$http',
       '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'gameService',
       function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, gameService) {
+        $scope.backButtonHandler = function () {
+          $state.go('main');
+        };
+
         var loadingScreen = $ionicLoading.show({
           content: 'Getting Game...',
         });

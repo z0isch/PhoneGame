@@ -1,8 +1,8 @@
 ﻿(function () {
   'use strict';
   angular.module('app').controller('PickPhraseCtrl', ['$scope', '$ionicPlatform', '$http',
-    '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'phraseService','backButton','gameService',
-    function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, phraseService, backButton, gameService) {
+    '$state', '$stateParams', '$ionicLoading', '$ionicNavBarDelegate', 'phraseService','gameService',
+    function ($scope, $ionicPlatform, $http, $state, $stateParams, $ionicLoading, $ionicNavBarDelegate, phraseService, gameService) {
       $scope.backButtonHandler = function () {
         var loadingScreen = $ionicLoading.show({
           content: '',
